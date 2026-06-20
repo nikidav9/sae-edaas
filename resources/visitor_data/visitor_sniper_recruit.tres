@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="VisitorData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/visitor_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"sniper_recruit"
+display_name = "Снайпер"
+type = 0
+dialogue_tree = {}
+reveal_chance = 0.0
+reveal_delay_days = 0
+hidden_trait = 0
+ability_id = &"tower_sniper"
+spawn_weight = 1.0
+min_day = 1

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="GameBalance" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/balance/game_balance.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+visitor_min_interval_days = 1
+visitor_max_interval_days = 3
+weight_friendly = 1.0
+weight_neutral = 1.0
+weight_hostile = 0.5
+weight_dilemma = 0.7
+hostile_reputation_scaling = 3.0
+visitor_decision_seconds = 15.0
+morale_loss_on_betrayal = 0.25
+morale_gain_on_rescue = 0.1
+manipulator_daily_morale_drain = 0.05
+reputation_gain_on_rob_trader = 0.15
+reputation_decay_per_day = 0.01
+horde_noise_threshold = 0.5
+scout_horde_warning_days = 2
+max_active_zombies = 40
+multimesh_fps_threshold = 40

@@ -1,0 +1,36 @@
+; Engine configuration file.
+; Hollow Reach — survival base-builder (Godot 4.x, mobile, portrait)
+;
+; Порядок autoload важен: EventBus грузится первым, чтобы остальные
+; синглтоны и системы могли на него подписываться в _ready().
+
+config_version=5
+
+[application]
+
+config/name="Hollow Reach"
+config/description="Survival base-builder против зомби. Люди опаснее зомби."
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+
+EventBus="*res://autoload/event_bus.gd"
+GameState="*res://autoload/game_state.gd"
+SaveSystem="*res://autoload/save_system.gd"
+NotificationManager="*res://autoload/notification_manager.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/handheld/orientation="portrait"
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+textures/canvas_textures/default_texture_filter=0

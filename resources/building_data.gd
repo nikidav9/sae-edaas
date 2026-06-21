@@ -1,0 +1,46 @@
+extends Resource
+class_name BuildingData
+## Данные одного типа постройки. Новые здания — только .tres, без правки кода.
+
+@export var id: StringName = &""
+@export var display_name: String = "Постройка"
+@export_multiline var description: String = ""
+@export var icon: Texture2D
+
+@export_group("Размер (в клетках сетки)")
+## Сколько клеток занимает по X и Y.
+@export var size_cells: Vector2i = Vector2i(1, 1)
+
+@export_group("Стоимость")
+## Ключи — resource_id (String), значения — int количество.
+@export var build_cost: Dictionary = {}
+## Дней строительства. 0 = мгновенно. Механик сокращает в 2×.
+@export var build_time_days: int = 1
+
+@export_group("Характеристики")
+@export var max_health: int = 100
+## Бонус к обороне периметра (суммируется в BuildingSystem).
+@export var defense_bonus: int = 0
+
+@export_group("NPC / умения")
+## Какое умение разблокирует эта постройка (WorkPoint для NPC).
+## Пустая строка = нет рабочей точки.
+@export var provides_work_for_ability: StringName = &""
+## Умение NPC-строителя, которое ускоряет строительство.
+@export var builder_ability_id: StringName = &"mechanic_traps"
+
+@export_group("Визуал")
+## Путь к сцене готового здания (инстанцируется при завершении строительства).
+@export_file("*.tscn") var building_scene: String = ""
+## Путь к сцене строящегося здания (леса).
+@export_file("*.tscn") var scaffold_scene: String = ""
+
+func can_afford() -> bool:
+	for res_id in build_cost:
+		if not GameState.can_afford(res_id, int(build_cost[res_id])):
+			return false
+	return true
+
+func pay_cost() -> void:
+	for res_id in build_cost:
+		GameState.change_resource(res_id, -int(build_cost[res_id]))

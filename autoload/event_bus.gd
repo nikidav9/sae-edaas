@@ -40,6 +40,14 @@ signal base_attacked(attacker_count: int)
 # --- Ресурсы ---
 signal resource_changed(resource_id: String, amount: int)
 
+# --- Постройки ---
+signal build_requested(building_data: BuildingData, cell: Vector2i)
+signal building_placed(building_data: BuildingData, cell: Vector2i)
+signal building_construction_completed(building_id: StringName, cell: Vector2i)
+signal building_destroyed(building_id: StringName, cell: Vector2i)
+signal build_mode_entered()
+signal build_mode_exited()
+
 # --- Сохранения ---
 signal save_completed(slot: int)
 signal load_completed(slot: int)

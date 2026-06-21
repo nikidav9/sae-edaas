@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"workshop"
+display_name = "Мастерская"
+description = "Рабочее место механика. Без неё ловушки крафтятся медленно и вручную."
+size_cells = Vector2i(2, 1)
+build_cost = {"materials": 8}
+build_time_days = 1
+max_health = 80
+defense_bonus = 0
+provides_work_for_ability = &"mechanic_traps"
+building_scene = "res://scenes/base/buildings/workshop.tscn"
+scaffold_scene = "res://scenes/base/buildings/scaffold.tscn"

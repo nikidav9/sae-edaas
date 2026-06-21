@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"farm_plot"
+display_name = "Огород"
+description = "Охраняемая грядка для фермера. Без неё фермер бесполезен."
+size_cells = Vector2i(3, 2)
+build_cost = {"materials": 4}
+build_time_days = 2
+max_health = 40
+defense_bonus = 0
+provides_work_for_ability = &"farmer_food"
+building_scene = "res://scenes/base/buildings/farm_plot.tscn"
+scaffold_scene = "res://scenes/base/buildings/scaffold.tscn"

@@ -38,12 +38,13 @@ layer = 5
 [node name="VirtualJoystick" parent="GameUI" instance=ExtResource("7")]
 
 [node name="AttackButton" type="Button" parent="GameUI"]
-anchor_left = 0.5
-anchor_top = 1.0
+anchor_left = 0.6
+anchor_top = 0.55
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -200
-offset_right = -16
-offset_bottom = -16
+offset_left = 0
+offset_top = 0
+offset_right = -24
+offset_bottom = -24
 text = "⚔"
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 48

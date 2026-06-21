@@ -19,6 +19,7 @@ const PHASE_ICONS: Array[String] = ["🌅", "☀️", "🌇", "🌙"]
 @onready var save_menu: SaveMenu = %SaveMenu
 @onready var expedition_button: Button = %ExpeditionButton
 @onready var health_label: Label = %HealthLabel
+@onready var interaction_prompt: Label = %InteractionPrompt
 
 func _ready() -> void:
 	# Сигналы кнопок.
@@ -32,6 +33,7 @@ func _ready() -> void:
 	EventBus.visitor_dialogue_started.connect(_on_dialogue_started)
 	EventBus.visitor_resolved.connect(_on_dialogue_ended)
 	EventBus.player_damaged.connect(_on_player_damaged)
+	EventBus.interaction_prompt_changed.connect(_on_interaction_prompt_changed)
 	_refresh_day()
 	# Ищем игрока после того как все узлы готовы.
 	call_deferred("_init_player_health")
@@ -76,3 +78,7 @@ func _init_player_health() -> void:
 func _on_player_damaged(_amount: int, remaining: int) -> void:
 	var max_hp: int = GameState.balance.player_max_health
 	health_label.text = "%d/%d" % [remaining, max_hp]
+
+func _on_interaction_prompt_changed(text: String) -> void:
+	interaction_prompt.text = text
+	interaction_prompt.visible = not text.is_empty()

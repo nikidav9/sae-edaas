@@ -39,6 +39,8 @@ signal base_attacked(attacker_count: int)
 
 # --- Ресурсы ---
 signal resource_changed(resource_id: String, amount: int)
+## Текст подсказки взаимодействия (пустая строка = скрыть).
+signal interaction_prompt_changed(text: String)
 
 # --- Постройки ---
 signal build_requested(building_data: BuildingData, cell: Vector2i)

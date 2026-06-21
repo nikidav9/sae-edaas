@@ -20,6 +20,11 @@ color = Color(0.2, 0.85, 0.35, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("1")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+zoom = Vector2(2.0, 2.0)
+
 [node name="AttackArea" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 6

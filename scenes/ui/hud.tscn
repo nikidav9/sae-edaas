@@ -121,6 +121,19 @@ size_flags_horizontal = 3
 script = ExtResource("2")
 resource_id = "medicine"
 
+[node name="InteractionPrompt" type="Label" parent="." node_paths=PackedStringArray("InteractionPrompt")]
+unique_name_in_owner = true
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -110.0
+offset_bottom = -70.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 17
+modulate = Color(1.0, 0.95, 0.5, 0.92)
+visible = false
+
 [node name="JournalPanel" type="CanvasLayer" parent="." node_paths=PackedStringArray("JournalPanel")]
 unique_name_in_owner = true
 script = ExtResource("4")

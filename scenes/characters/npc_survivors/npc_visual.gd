@@ -91,43 +91,80 @@ func _l(x0: float, y0: float, x1: float, y1: float, col: Color, w: float) -> voi
 
 # ─── Снайпер ──────────────────────────────────────────────────────────────────
 func _sniper(b: float, ll: float, rl: float) -> void:
-	var hood  := Color(0.204, 0.165, 0.118)
-	var coat  := Color(0.267, 0.220, 0.149)
-	var pan   := Color(0.180, 0.149, 0.110)
-	var gun   := Color(0.157, 0.133, 0.094)
-	var scrf  := Color(0.373, 0.314, 0.235)
+	var cloak  := Color(0.38, 0.38, 0.15)   # основной оливковый
+	var cloak2 := Color(0.28, 0.28, 0.10)   # тень плаща
+	var cloak3 := Color(0.48, 0.48, 0.20)   # свет плаща
+	var hood   := Color(0.36, 0.36, 0.13)   # капюшон чуть темнее
+	var bala   := Color(0.10, 0.09, 0.07)   # балаклава
+	var eyes   := Color(0.85, 0.50, 0.05)   # оранжевые глаза-прицел
+	var gun    := Color(0.22, 0.20, 0.15)   # металл винтовки
+	var gun2   := Color(0.35, 0.32, 0.24)   # ложе (дерево)
+	var pan    := Color(0.22, 0.22, 0.09)   # тёмные штаны (почти не видны)
 
-	# Винтовка (за спиной)
-	_l(-5.0, -11.0 + b, 11.0, 8.0 + b, gun, 2.0)
-	_l(-5.0, -11.0 + b, -9.0, -6.0 + b, gun, 1.5)
-	# Сапоги
-	_r(-9.0 + ll, 10.0 + b, 8.0, 5.0, DARK_BOOT)
-	_r(1.0 + rl, 10.0 + b, 8.0, 5.0, DARK_BOOT)
-	# Ноги
-	_r(-7.0 + ll, 5.0 + b, 5.5, 6.0, pan)
-	_r(1.5 + rl, 5.0 + b, 5.5, 6.0, pan)
-	# Плащ с широкими плечами
+	# Длинная снайперская винтовка наискосок
+	_l(-12.0, 10.0 + b, 10.0, -12.0 + b, gun2, 3.5)   # ложе
+	_l(-12.0, 10.0 + b, 10.0, -12.0 + b, gun, 1.5)     # металл поверх
+	draw_rect(Rect2(7.0, -14.0 + b, 4.0, 3.5), gun)    # казённик
+	draw_rect(Rect2(-14.0, 10.0 + b, 4.0, 2.5), gun)   # дульный тормоз
+
+	# Ноги и сапоги (едва видны из-под плаща)
+	draw_rect(Rect2(-5.0 + ll, 11.0 + b, 4.0, 4.0), pan)
+	draw_rect(Rect2(1.0 + rl, 11.0 + b, 4.0, 4.0), pan)
+	_r(-6.0 + ll, 14.0 + b, 5.5, 4.0, DARK_BOOT)
+	_r(0.5 + rl, 14.0 + b, 5.5, 4.0, DARK_BOOT)
+
+	# Массивный плащ-колокол (основная форма)
 	_p(PackedVector2Array([
-		Vector2(-9.0, -5.0 + b), Vector2(-14.0, 0.0 + b),
-		Vector2(-11.0, 10.0 + b), Vector2(11.0, 10.0 + b),
-		Vector2(14.0, 0.0 + b), Vector2(9.0, -5.0 + b)]), coat)
-	# Шарф
-	_r(-8.0, -5.0 + b, 16.0, 5.0, scrf)
-	draw_rect(Rect2(-5.0, -6.0 + b, 10.0, 3.0), scrf.darkened(0.15))
-	# Голова
-	_c(0.0, -9.0 + b, 7.0, SKIN)
-	# Большой тактический капюшон
+		Vector2(-5.0, -8.0 + b),  Vector2(-16.0, 0.0 + b),
+		Vector2(-15.0, 12.0 + b), Vector2(15.0, 12.0 + b),
+		Vector2(16.0, 0.0 + b),   Vector2(5.0, -8.0 + b)]), cloak)
+
+	# Тени на плаще (левая и нижняя)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-5.0, -8.0 + b), Vector2(-16.0, 0.0 + b),
+		Vector2(-15.0, 12.0 + b), Vector2(-5.0, 12.0 + b),
+		Vector2(-4.0, 0.0 + b)]), cloak2)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-15.0, 9.0 + b), Vector2(-15.0, 12.0 + b),
+		Vector2(15.0, 12.0 + b), Vector2(15.0, 9.0 + b)]), cloak2)
+
+	# Блик на плаще (правая верхняя часть)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(3.0, -8.0 + b), Vector2(16.0, 0.0 + b),
+		Vector2(14.0, 5.0 + b), Vector2(5.0, 0.0 + b)]), cloak3)
+
+	# Складки плаща
+	draw_line(Vector2(-4.0, -6.0 + b), Vector2(-10.0, 8.0 + b), cloak2, 1.0)
+	draw_line(Vector2(2.0, -6.0 + b),  Vector2(5.0, 10.0 + b),  cloak2, 1.0)
+
+	# Голова (небольшой круг под капюшоном — основа для балаклавы)
+	draw_circle(Vector2(0.0, -13.0 + b), 6.5, bala)
+
+	# Капюшон (большой, закрывает большую часть головы)
 	_p(PackedVector2Array([
-		Vector2(-8.0, -5.0 + b), Vector2(-10.0, -13.0 + b),
-		Vector2(-5.0, -21.0 + b), Vector2(5.0, -21.0 + b),
-		Vector2(10.0, -13.0 + b), Vector2(8.0, -5.0 + b)]), hood)
-	# Тень внутри
-	draw_rect(Rect2(-6.0, -14.0 + b, 12.0, 9.0), Color(0.078, 0.059, 0.039))
-	# Прорезь для глаз
-	draw_rect(Rect2(-5.0, -10.0 + b, 10.0, 3.0), SKIN)
-	draw_rect(Rect2(-4.0, -10.0 + b, 3.0, 2.5), Color(0.12, 0.16, 0.24))
-	draw_rect(Rect2(1.0, -10.0 + b, 3.0, 2.5), Color(0.12, 0.16, 0.24))
-	draw_line(Vector2(-5.0, -20.0 + b), Vector2(-10.0, -13.0 + b), hood.lightened(0.08), 1.0)
+		Vector2(-5.0, -8.0 + b),  Vector2(-8.0, -14.0 + b),
+		Vector2(-5.0, -22.0 + b), Vector2(5.0, -22.0 + b),
+		Vector2(8.0, -14.0 + b),  Vector2(5.0, -8.0 + b)]), hood)
+
+	# Тень внутри капюшона
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-5.0, -9.0 + b),  Vector2(-5.0, -20.0 + b),
+		Vector2(-2.0, -20.0 + b), Vector2(-1.0, -9.0 + b)]), hood.darkened(0.3))
+
+	# Балаклава — тёмная зона лица
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-5.0, -9.0 + b), Vector2(-6.0, -16.0 + b),
+		Vector2(6.0, -16.0 + b), Vector2(5.0, -9.0 + b)]), bala)
+
+	# Оранжевые светящиеся глаза-прицелы
+	draw_rect(Rect2(-5.0, -14.0 + b, 4.0, 2.5), eyes)
+	draw_rect(Rect2(1.0,  -14.0 + b, 4.0, 2.5), eyes)
+	# Яркий блик на глазах
+	draw_rect(Rect2(-4.5, -14.0 + b, 1.5, 1.0), Color(1.0, 0.85, 0.50))
+	draw_rect(Rect2(1.5,  -14.0 + b, 1.5, 1.0), Color(1.0, 0.85, 0.50))
+
+	# Складка капюшона
+	draw_line(Vector2(-8.0, -14.0 + b), Vector2(-5.0, -22.0 + b), hood.lightened(0.10), 1.0)
 
 # ─── Механик ──────────────────────────────────────────────────────────────────
 func _mechanic(b: float, ll: float, rl: float) -> void:

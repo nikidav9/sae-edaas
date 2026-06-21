@@ -17,9 +17,14 @@ const _O := 1.2   # outline expansion in game units
 var _role: Role = Role.SCOUT
 var _walk_phase: float = 0.0
 var _is_moving: bool = false
+var _sprite: Sprite2D = null
+
+func _ready() -> void:
+	_sprite = get_node_or_null("SniperSprite")
 
 func setup(data: NPCData) -> void:
 	_role = _ability_to_role(data.ability_id)
+	_update_sprite_visibility()
 	queue_redraw()
 
 func set_moving(moving: bool) -> void:
@@ -28,6 +33,11 @@ func set_moving(moving: bool) -> void:
 func set_facing(dir: int) -> void:
 	scale.x = 1.0 if dir >= 0 else -1.0
 
+func _update_sprite_visibility() -> void:
+	if _sprite == null:
+		return
+	_sprite.visible = (_role == Role.SNIPER)
+
 func _process(delta: float) -> void:
 	var prev := _walk_phase
 	if _is_moving:
@@ -35,14 +45,19 @@ func _process(delta: float) -> void:
 	else:
 		_walk_phase = move_toward(_walk_phase, 0.0, delta * 14.0)
 	if _walk_phase != prev:
+		# Боб-анимация для PNG-спрайта
+		if _sprite != null and _sprite.visible:
+			_sprite.position.y = -14.0 + sin(_walk_phase * 2.0) * 1.0
 		queue_redraw()
 
 func _draw() -> void:
+	# Снайпер использует PNG-спрайт — _draw() для него не нужен
+	if _role == Role.SNIPER:
+		return
 	var b  := sin(_walk_phase * 2.0) * 1.0
 	var ll := sin(_walk_phase) * 3.5
 	var rl := -sin(_walk_phase) * 3.5
 	match _role:
-		Role.SNIPER:   _sniper(b, ll, rl)
 		Role.MECHANIC: _mechanic(b, ll, rl)
 		Role.MEDIC:    _medic(b, ll, rl)
 		Role.SCOUT:    _scout(b, ll, rl)

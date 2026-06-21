@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scenes/characters/npc_survivors/npc_controller.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/characters/npc_survivors/npc_visual.gd" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/ai/states/npc_idle_state.gd" id="4"]
 [ext_resource type="Script" path="res://scripts/ai/states/npc_work_state.gd" id="5"]
 [ext_resource type="Script" path="res://scripts/ai/states/npc_patrol_state.gd" id="6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npcs/1.png" id="7"]
 
 [sub_resource type="CapsuleShape2D" id="shape"]
 radius = 8.0
@@ -18,6 +19,12 @@ collision_mask = 1
 
 [node name="NPCVisual" type="Node2D" parent="."]
 script = ExtResource("2")
+
+[node name="SniperSprite" type="Sprite2D" parent="NPCVisual"]
+texture = ExtResource("7")
+scale = Vector2(0.038, 0.038)
+position = Vector2(0, -14)
+visible = false
 
 [node name="NameLabel" type="Label" parent="."]
 offset_top = -44.0

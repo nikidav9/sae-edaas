@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/morale_bar.gd" id="1"]
+
+[node name="MoraleBar" type="VBoxContainer"]
+script = ExtResource("1")
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Мораль"
+theme_override_font_sizes/font_size = 13
+
+[node name="Bar" type="ProgressBar" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 10)
+max_value = 1.0
+value = 0.7
+show_percentage = false

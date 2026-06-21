@@ -1,38 +1,52 @@
 extends Node
 class_name HordeSystem
-## Блуждающие орды зомби на карте мира.
+## Управляет спавном зомби-орд на карте мира.
 ##
-## Орды двигаются по карте, реагируют на шум, могут выйти к базе. Разведчик
-## (уникальное умение) видит приближение заранее. Для массовых юнитов на
-## экране — object pooling и MultiMeshInstance2D (лимиты в GameBalance).
+## При spawn_horde() активирует зомби из ZombiePool вокруг точки спавна.
+## Реагирует на шум через StimulusSystem → HerdManager.
 
-## Активные орды: id -> {"position": Vector2, "size": int, "target": Vector2}
+const WALKER_DATA := preload("res://resources/enemy_data/zombie_walker.tres")
+const SPAWN_SCATTER := 48.0  # Радиус разброса зомби в пятне орды.
+
+## Задаются из main.gd после создания всех систем.
+var zombie_pool: ZombiePool = null
+var herd_manager: HerdManager = null
+
+## Активные орды для разведчика: id → {"position": Vector2, "size": int}
 var _hordes: Dictionary = {}
-var _next_id: int = 1
+var _next_horde_id: int = 1
 
 func _ready() -> void:
-	EventBus.noise_emitted.connect(_on_noise_emitted)
 	EventBus.day_passed.connect(_on_day_passed)
 
+## Спавнит орду size зомби вокруг position.
+## Возвращает id орды для дальнейшего отслеживания.
 func spawn_horde(position: Vector2, size: int) -> int:
-	var id := _next_id
-	_next_id += 1
-	_hordes[id] = {"position": position, "size": size, "target": position}
-	# Разведчик в группе → заранее предупреждаем игрока.
+	var horde_id := _next_horde_id
+	_next_horde_id += 1
+	_hordes[horde_id] = {"position": position, "size": size}
+
+	# Разведчик в ростере — предупреждаем заранее.
 	if GameState.has_ability("scout_recon"):
-		EventBus.horde_spotted.emit(id, position)
-	return id
+		EventBus.horde_spotted.emit(horde_id, position)
 
-func _on_noise_emitted(position: Vector2, loudness: float) -> void:
-	if loudness < GameState.balance.horde_noise_threshold:
-		return
-	# Ближайшие орды переориентируются на источник шума.
-	for id in _hordes:
-		_hordes[id]["target"] = position
+	if zombie_pool == null:
+		return horde_id
 
-func _on_day_passed(_day: int) -> void:
-	# Дневной тик движения/проверки подхода к базе — заглушка под реализацию.
-	for id in _hordes:
-		var horde: Dictionary = _hordes[id]
-		if GameState.has_ability("scout_recon"):
-			EventBus.horde_approaching.emit(id, GameState.balance.scout_horde_warning_days)
+	var spawned := 0
+	for _i in size:
+		if zombie_pool.active_count() >= GameState.balance.max_active_zombies:
+			break
+		var angle := randf() * TAU
+		var dist := randf_range(0.0, SPAWN_SCATTER)
+		var pos := position + Vector2(cos(angle), sin(angle)) * dist
+		var z := zombie_pool.acquire(pos, WALKER_DATA)
+		if z != null:
+			spawned += 1
+
+	return horde_id
+
+func _on_day_passed(day: int) -> void:
+	if GameState.has_ability("scout_recon") and not _hordes.is_empty():
+		for horde_id in _hordes:
+			EventBus.horde_approaching.emit(horde_id, GameState.balance.scout_horde_warning_days)

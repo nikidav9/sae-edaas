@@ -52,3 +52,29 @@ class_name GameBalance
 @export var max_active_zombies: int = 40
 ## Порог FPS, ниже которого орда переключается на MultiMeshInstance2D.
 @export var multimesh_fps_threshold: int = 40
+
+@export_group("Зомби / стада")
+## Радиус, в котором зомби замечает другого и присоединяется к его стаду.
+@export var zombie_join_herd_radius: float = 120.0
+## Скорость зомби в режиме блужданий (доля от move_speed).
+@export var zombie_wander_speed: float = 25.0
+## Скорость зомби, привлечённого стимулом.
+@export var zombie_attracted_speed: float = 55.0
+## Скорость стада.
+@export var zombie_herd_speed: float = 40.0
+## Потеря силы стимула в секунду.
+@export var stimulus_decay_per_second: float = 0.15
+## Минимальный размер стада для эффекта перенаправления.
+@export var herd_min_size_for_redirect: int = 3
+## Веса сил сплочения флокинга (cohesion/separation/alignment).
+@export var flocking_cohesion_weight: float = 0.4
+@export var flocking_separation_weight: float = 1.2
+## Радиус избегания соседнего зомби в стаде.
+@export var flocking_separation_radius: float = 36.0
+@export var flocking_alignment_weight: float = 0.2
+## Дистанция атаки зомби (пиксели).
+@export var zombie_attack_range: float = 40.0
+## Интервал атаки в секундах.
+@export var zombie_attack_interval: float = 1.5
+## Урон морали группы за каждую атаку зомби на базу.
+@export var zombie_attack_morale_loss: float = 0.01

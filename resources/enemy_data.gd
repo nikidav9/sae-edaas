@@ -24,9 +24,13 @@ enum Family {
 
 @export_group("Сенсорика / шум")
 ## Радиус, в котором враг реагирует на источник шума.
-@export var hearing_radius: float = 256.0
+@export var hearing_radius: float = 200.0
 ## Насколько сильно враг тянется на шум (множитель приоритета).
 @export var noise_attraction: float = 1.0
+## Радиус обнаружения запаха (гниль, еда, живые).
+@export var smell_radius: float = 150.0
+## Радиус, на котором враг реагирует на свет (фонари, окна).
+@export var light_attraction_range: float = 250.0
 
 @export_group("Оптимизация (mobile)")
 ## Можно ли рендерить через MultiMeshInstance2D в составе орды

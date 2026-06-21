@@ -52,5 +52,17 @@ signal build_mode_exited()
 signal save_completed(slot: int)
 signal load_completed(slot: int)
 
+# --- Зомби / стада ---
+## Новый стимул появился на карте (тип: StimulusSystem.StimulusType).
+signal stimulus_emitted(stimulus_type: int, position: Vector2, strength: float)
+## Зомби влился в стадо.
+signal zombie_joined_herd(zombie_id: int, herd_id: int)
+## Стадо достигло herd_min_size_for_redirect и стало полноценным.
+signal herd_formed(herd_id: int, position: Vector2, size: int)
+## Стадо перенаправлено на новую цель (игрок применил приманку/шум).
+signal herd_redirected(herd_id: int, new_target: Vector2)
+## Стадо распалось (все зомби погибли или вернулись в пул).
+signal herd_dispersed(herd_id: int)
+
 # --- Уведомления (мост к NotificationManager) ---
 signal notification_requested(title: String, body: String, delay_seconds: int)

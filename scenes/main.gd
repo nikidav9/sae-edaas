@@ -14,13 +14,38 @@ var dialogue_system: DialogueSystem
 var npc_manager: NPCManager
 var building_system: BuildingSystem
 
+# --- Зомби-системы ---
+var stimulus_system: StimulusSystem
+var herd_manager: HerdManager
+var zombie_pool: ZombiePool
+
 func _ready() -> void:
 	noise_system = NoiseSystem.new()
 	noise_system.name = "NoiseSystem"
 	add_child(noise_system)
 
+	# Зомби-системы: порядок важен — stimulus → herd → pool → horde.
+	stimulus_system = StimulusSystem.new()
+	stimulus_system.name = "StimulusSystem"
+	add_child(stimulus_system)
+
+	herd_manager = HerdManager.new()
+	herd_manager.name = "HerdManager"
+	add_child(herd_manager)
+
+	zombie_pool = ZombiePool.new()
+	zombie_pool.name = "ZombiePool"
+	add_child(zombie_pool)
+
+	# Связываем зависимости после создания всех узлов.
+	herd_manager.zombie_pool = zombie_pool
+	zombie_pool.herd_manager = herd_manager
+	zombie_pool.stimulus_system = stimulus_system
+
 	horde_system = HordeSystem.new()
 	horde_system.name = "HordeSystem"
+	horde_system.zombie_pool = zombie_pool
+	horde_system.herd_manager = herd_manager
 	add_child(horde_system)
 
 	visitor_system = VisitorSystem.new()
@@ -46,3 +71,8 @@ func _ready() -> void:
 	building_system = BuildingSystem.new()
 	building_system.name = "BuildingSystem"
 	add_child(building_system)
+
+## Вызывается WorldMap после генерации — устанавливает позицию базы.
+func set_base_position(pos: Vector2) -> void:
+	npc_manager.base_position = pos
+	herd_manager.base_position = pos

@@ -25,6 +25,7 @@ var _placement_mode: bool = false
 func _ready() -> void:
 	hide()
 	ghost.hide()
+	close_button.pressed.connect(_on_close_pressed)
 	EventBus.build_mode_entered.connect(_on_build_mode_entered)
 	EventBus.build_mode_exited.connect(_on_build_mode_exited)
 

@@ -5,6 +5,8 @@ class_name MainMenu
 @onready var version_label: Label = %VersionLabel
 
 func _ready() -> void:
+	$VBox/NewGameButton.pressed.connect(_on_new_game_pressed)
+	%ContinueButton.pressed.connect(_on_continue_pressed)
 	# Кнопка "Продолжить" активна только если есть хотя бы один сейв.
 	var has_save := false
 	for slot in SaveSystem.SLOT_COUNT:

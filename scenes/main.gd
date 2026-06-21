@@ -94,6 +94,11 @@ func _ready() -> void:
 	if player and joystick:
 		player.joystick = joystick
 
+	# --- Кнопка атаки ---
+	var attack_btn := get_node_or_null("GameUI/AttackButton") as Button
+	if attack_btn:
+		attack_btn.pressed.connect(_on_attack_button_pressed)
+
 	# --- Связываем ExpeditioPanel с системой ---
 	if expedition_panel:
 		expedition_panel.setup(expedition_system)

@@ -18,13 +18,23 @@ const PHASE_ICONS: Array[String] = ["🌅", "☀️", "🌇", "🌙"]
 @onready var save_button: Button = %SaveButton
 @onready var save_menu: SaveMenu = %SaveMenu
 @onready var expedition_button: Button = %ExpeditionButton
+@onready var health_label: Label = %HealthLabel
 
 func _ready() -> void:
+	# Сигналы кнопок.
+	journal_button.pressed.connect(_on_journal_button_pressed)
+	build_button.pressed.connect(_on_build_button_pressed)
+	save_button.pressed.connect(_on_save_button_pressed)
+	expedition_button.pressed.connect(_on_expedition_button_pressed)
+	# Игровые события.
 	EventBus.day_passed.connect(_on_day_passed)
 	EventBus.day_phase_changed.connect(_on_phase_changed)
 	EventBus.visitor_dialogue_started.connect(_on_dialogue_started)
 	EventBus.visitor_resolved.connect(_on_dialogue_ended)
+	EventBus.player_damaged.connect(_on_player_damaged)
 	_refresh_day()
+	# Ищем игрока после того как все узлы готовы.
+	call_deferred("_init_player_health")
 
 func _on_day_passed(day: int) -> void:
 	day_label.text = "День %d" % day
@@ -56,3 +66,13 @@ func _on_expedition_button_pressed() -> void:
 	var panel := get_tree().get_first_node_in_group("expedition_panel") as ExpeditionPanel
 	if panel:
 		panel.toggle()
+
+func _init_player_health() -> void:
+	var player := get_tree().get_first_node_in_group("player") as PlayerController
+	if player:
+		var max_hp: int = GameState.balance.player_max_health
+		health_label.text = "%d/%d" % [player.health, max_hp]
+
+func _on_player_damaged(_amount: int, remaining: int) -> void:
+	var max_hp: int = GameState.balance.player_max_health
+	health_label.text = "%d/%d" % [remaining, max_hp]

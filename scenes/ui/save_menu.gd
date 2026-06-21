@@ -13,6 +13,7 @@ var _mode: String = "save"  # "save" | "load"
 
 func _ready() -> void:
 	hide()
+	$Panel/VBox/TitleRow/CloseButton.pressed.connect(_on_close_pressed)
 	EventBus.save_completed.connect(func(_s: int) -> void: _rebuild() if visible else void)
 	EventBus.load_completed.connect(func(_s: int) -> void: hide())
 

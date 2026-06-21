@@ -13,12 +13,12 @@ var _facing: Vector2 = Vector2.DOWN
 ## Ссылка устанавливается Main при старте.
 var joystick: VirtualJoystick = null
 
-@onready var sprite: Sprite2D = $Sprite2D
 @onready var attack_area: Area2D = $AttackArea
 
 signal health_changed(new_hp: int, max_hp: int)
 
 func _ready() -> void:
+	add_to_group("player")
 	_max_health = GameState.balance.player_max_health
 	health = _max_health
 

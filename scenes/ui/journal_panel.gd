@@ -10,6 +10,8 @@ class_name JournalPanel
 
 func _ready() -> void:
 	hide()
+	$Panel/VBox/TitleBar/CloseButton.pressed.connect(_on_close_pressed)
+	$Backdrop.gui_input.connect(_on_backdrop_gui_input)
 	EventBus.visitor_resolved.connect(_on_visitor_resolved)
 
 func toggle() -> void:
@@ -92,5 +94,12 @@ func _on_visitor_resolved(_visitor: VisitorData, _choice: String) -> void:
 func _on_close_pressed() -> void:
 	_close()
 
-func _on_backdrop_pressed() -> void:
-	_close()
+func _on_backdrop_gui_input(event: InputEvent) -> void:
+	var is_press := false
+	if event is InputEventMouseButton:
+		is_press = (event as InputEventMouseButton).pressed
+	elif event is InputEventScreenTouch:
+		is_press = (event as InputEventScreenTouch).pressed
+	if is_press:
+		_close()
+		accept_event()

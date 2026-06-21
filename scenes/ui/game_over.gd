@@ -6,6 +6,8 @@ class_name GameOverScreen
 @onready var resources_label: Label = %ResourcesLabel
 
 func _ready() -> void:
+	$VBox/RestartButton.pressed.connect(_on_restart_pressed)
+	$VBox/MenuButton.pressed.connect(_on_menu_pressed)
 	reason_label.text = GameState.game_over_reason
 	day_label.text = "Прожито дней: %d" % GameState.current_day
 	var r := GameState.resources

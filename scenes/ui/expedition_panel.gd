@@ -14,6 +14,7 @@ var _expedition_system: ExpeditionSystem = null
 func _ready() -> void:
 	hide()
 	add_to_group("expedition_panel")
+	%CloseButton.pressed.connect(_on_close_pressed)
 	EventBus.expedition_completed.connect(_on_expedition_resolved.bind(true))
 	EventBus.expedition_failed.connect(func(aid, _r): _on_expedition_resolved(aid, false))
 	EventBus.npc_recruited.connect(func(_d): _rebuild() if visible else pass)

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"mechanic"
+display_name = "Механик"
+description = "Чинит и строит ловушки быстрее всех. Шумит при работе — привлекает зомби."
+ability_id = &"mechanic_traps"
+ability_role = 1
+ability_description = "Крафтит ловушки и баррикады в 2× быстрее. При работе издаёт шум — NoiseSystem учитывает это."
+food_upkeep = 1
+requires_structure_id = &"workshop"
+max_health = 90
+attack_damage = 12
+attack_range = 40.0
+base_loyalty = 0.65

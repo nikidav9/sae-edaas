@@ -1,16 +1,19 @@
-[gd_resource type="Resource" script_class="VisitorData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="VisitorData" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://resources/visitor_data.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/npc_data/npc_sniper.tres" id="2"]
+[ext_resource type="Resource" path="res://resources/dialogue/dialogue_sniper.tres" id="3"]
 
 [resource]
 script = ExtResource("1")
 id = &"sniper_recruit"
 display_name = "Снайпер"
 type = 0
-dialogue_tree = {}
+dialogue_tree = ExtResource("3")
 reveal_chance = 0.0
 reveal_delay_days = 0
 hidden_trait = 0
 ability_id = &"tower_sniper"
+npc_data = ExtResource("2")
 spawn_weight = 1.0
 min_day = 1

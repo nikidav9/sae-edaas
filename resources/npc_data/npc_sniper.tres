@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"sniper"
+display_name = "Снайпер"
+description = "Держит дальний периметр с вышки. Привередлив в еде."
+ability_id = &"tower_sniper"
+ability_role = 0
+ability_description = "Атакует зомби с дальней дистанции через вышку. Единственный способ снять угрозу до того, как она добежит до ворот."
+food_upkeep = 3
+requires_structure_id = &"watchtower"
+max_health = 80
+attack_damage = 35
+attack_range = 300.0
+base_loyalty = 0.55

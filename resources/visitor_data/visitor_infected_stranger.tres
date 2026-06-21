@@ -1,16 +1,18 @@
-[gd_resource type="Resource" script_class="VisitorData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="VisitorData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://resources/visitor_data.gd" id="1"]
+[ext_resource type="Resource" path="res://resources/dialogue/dialogue_infected.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
 id = &"infected_stranger"
 display_name = "Усталый путник"
 type = 2
-dialogue_tree = {}
+dialogue_tree = ExtResource("2")
 reveal_chance = 0.2
 reveal_delay_days = 3
 hidden_trait = 2
 ability_id = &""
+npc_data = null
 spawn_weight = 0.5
 min_day = 2

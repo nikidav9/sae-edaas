@@ -11,6 +11,7 @@ var visitor_system: VisitorSystem
 var morale_system: MoraleSystem
 var day_night_system: DayNightSystem
 var dialogue_system: DialogueSystem
+var npc_manager: NPCManager
 
 func _ready() -> void:
 	noise_system = NoiseSystem.new()
@@ -36,3 +37,7 @@ func _ready() -> void:
 	dialogue_system = DialogueSystem.new()
 	dialogue_system.name = "DialogueSystem"
 	add_child(dialogue_system)
+
+	npc_manager = NPCManager.new()
+	npc_manager.name = "NPCManager"
+	add_child(npc_manager)

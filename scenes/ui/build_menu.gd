@@ -123,7 +123,7 @@ func _make_card(data: BuildingData) -> Control:
 		cost_row.alignment = BoxContainer.ALIGNMENT_CENTER
 		cost_row.theme_override_constants_separation = 5
 		vbox.add_child(cost_row)
-		for res_id: String in data.build_cost:
+		for res_id in data.build_cost:
 			var r_icon := GameIcon.new()
 			r_icon.icon_type = _res_icon_type(res_id)
 			r_icon.draw_background = false

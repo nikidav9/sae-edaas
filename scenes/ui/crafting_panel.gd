@@ -77,7 +77,7 @@ func _add_card(recipe: CraftingRecipe) -> void:
 	cost_prefix.add_theme_font_size_override("font_size", 13)
 	cost_prefix.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	cost_row.add_child(cost_prefix)
-	for k: String in recipe.input_resources:
+	for k in recipe.input_resources:
 		var r_icon := GameIcon.new()
 		r_icon.icon_type = _res_icon_type(k)
 		r_icon.draw_background = false
@@ -131,7 +131,7 @@ func _res_icon_type(res_id: String) -> GameIcon.IconType:
 	return GameIcon.IconType.MATERIALS
 
 func _can_afford(recipe: CraftingRecipe) -> bool:
-	for k: String in recipe.input_resources:
+	for k in recipe.input_resources:
 		if GameState.get_resource(k) < int(recipe.input_resources[k]):
 			return false
 	return true
@@ -139,7 +139,7 @@ func _can_afford(recipe: CraftingRecipe) -> bool:
 func _craft(recipe: CraftingRecipe) -> void:
 	if not _can_afford(recipe):
 		return
-	for k: String in recipe.input_resources:
+	for k in recipe.input_resources:
 		GameState.change_resource(k, -int(recipe.input_resources[k]))
 	GameState.change_resource(recipe.output_resource, recipe.output_amount)
 	_rebuild()

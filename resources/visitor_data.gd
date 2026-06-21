@@ -26,9 +26,10 @@ enum HiddenTrait {
 @export var display_name: String = "Незнакомец"
 @export var type: Type = Type.FRIENDLY
 
-## Дерево диалога. Формат описывается отдельно в DialogueSystem;
-## храним как Dictionary, чтобы редактировать данными, а не кодом.
-@export var dialogue_tree: Dictionary = {}
+## Дерево диалога визитёра. Редактируется в отдельном .tres (DialogueTree).
+@export var dialogue_tree: DialogueTree
+## Портрет визитёра для UI диалога.
+@export var portrait: Texture2D
 
 @export_group("Reveal (скрытая природа)")
 ## Вероятность раскрытия истинной природы за один день/диалог (0..1).

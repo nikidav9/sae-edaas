@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="DialogueTree" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_tree.gd" id="tree"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_node.gd" id="node_s"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_option.gd" id="opt_s"]
+
+[sub_resource type="Resource" id="opt_ask"]
+script = ExtResource("opt_s")
+label = "Откуда ты?"
+next_node_id = "backstory"
+action = ""
+requires_ability = &""
+morale_delta = 0.0
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="opt_recruit"]
+script = ExtResource("opt_s")
+label = "Присоединяйся к нам."
+next_node_id = ""
+action = "recruit"
+requires_ability = &""
+morale_delta = 0.05
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="opt_dismiss"]
+script = ExtResource("opt_s")
+label = "Уходи. Нам не нужна лишняя обуза."
+next_node_id = ""
+action = "dismiss"
+requires_ability = &""
+morale_delta = 0.0
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="opt_recruit2"]
+script = ExtResource("opt_s")
+label = "Ладно. Ты нам нужен."
+next_node_id = ""
+action = "recruit"
+requires_ability = &""
+morale_delta = 0.05
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="opt_dismiss2"]
+script = ExtResource("opt_s")
+label = "Слишком много ешь. Иди своей дорогой."
+next_node_id = ""
+action = "dismiss"
+requires_ability = &""
+morale_delta = -0.02
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="node_start"]
+script = ExtResource("node_s")
+id = "start"
+speaker = ""
+text = "Эй! Не стреляй. Я один. Вижу у вас тут лагерь — можете взять меня? Я хорошо стреляю с дальних позиций. Только... я ем много. Это честно."
+options = [SubResource("opt_ask"), SubResource("opt_recruit"), SubResource("opt_dismiss")]
+auto_next_id = ""
+auto_next_delay = 2.0
+timeout_option_index = -1
+
+[sub_resource type="Resource" id="node_backstory"]
+script = ExtResource("node_s")
+id = "backstory"
+speaker = ""
+text = "Военный. Бывший. Три года провёл на наблюдательных вышках на севере. Потом всё рухнуло... Могу держать периметр с дальних позиций. Но честно скажу — без нормальной еды я работать не смогу."
+options = [SubResource("opt_recruit2"), SubResource("opt_dismiss2")]
+auto_next_id = ""
+auto_next_delay = 2.0
+timeout_option_index = -1
+
+[resource]
+script = ExtResource("tree")
+nodes = [SubResource("node_start"), SubResource("node_backstory")]
+entry_node_id = "start"

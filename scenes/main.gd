@@ -10,6 +10,7 @@ var horde_system: HordeSystem
 var visitor_system: VisitorSystem
 var morale_system: MoraleSystem
 var day_night_system: DayNightSystem
+var dialogue_system: DialogueSystem
 
 func _ready() -> void:
 	noise_system = NoiseSystem.new()
@@ -31,3 +32,7 @@ func _ready() -> void:
 	day_night_system = DayNightSystem.new()
 	day_night_system.name = "DayNightSystem"
 	add_child(day_night_system)
+
+	dialogue_system = DialogueSystem.new()
+	dialogue_system.name = "DialogueSystem"
+	add_child(dialogue_system)

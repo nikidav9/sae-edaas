@@ -17,6 +17,7 @@ const PHASE_ICONS: Array[String] = ["🌅", "☀️", "🌇", "🌙"]
 @onready var build_button: Button = %BuildButton
 @onready var save_button: Button = %SaveButton
 @onready var save_menu: SaveMenu = %SaveMenu
+@onready var expedition_button: Button = %ExpeditionButton
 
 func _ready() -> void:
 	EventBus.day_passed.connect(_on_day_passed)
@@ -50,3 +51,8 @@ func _on_build_button_pressed() -> void:
 
 func _on_save_button_pressed() -> void:
 	save_menu.toggle_save()
+
+func _on_expedition_button_pressed() -> void:
+	var panel := get_tree().get_first_node_in_group("expedition_panel") as ExpeditionPanel
+	if panel:
+		panel.toggle()

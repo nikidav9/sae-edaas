@@ -53,6 +53,42 @@ class_name GameBalance
 ## Порог FPS, ниже которого орда переключается на MultiMeshInstance2D.
 @export var multimesh_fps_threshold: int = 40
 
+@export_group("Игрок")
+@export var player_max_health: int = 100
+@export var player_move_speed: float = 120.0
+@export var player_attack_damage: int = 15
+@export var player_attack_range: float = 48.0
+@export var player_attack_cooldown: float = 0.8
+
+@export_group("Рейдеры")
+## Первый рейд происходит не раньше этого дня.
+@export var raid_min_day: int = 5
+## Промежуток между рейдами (дни), уменьшается по репутации.
+@export var raid_interval_days: int = 4
+## Базовое количество рейдеров.
+@export var raid_base_count: int = 3
+## Максимальное количество рейдеров в одном рейде.
+@export var raid_max_count: int = 12
+## Множитель числа рейдеров от raider_reputation.
+@export var raid_reputation_scaling: float = 2.0
+## Здоровье рейдера.
+@export var raider_max_health: int = 50
+## Урон от удара рейдера.
+@export var raider_attack_damage: int = 12
+## Скорость рейдера.
+@export var raider_move_speed: float = 80.0
+
+@export_group("Экспедиции")
+## Базовая длительность экспедиции в днях.
+@export var expedition_base_days: int = 2
+## Бонус разведчика — на сколько дней короче экспедиция.
+@export var expedition_scout_bonus_days: int = 1
+## Минимальный/максимальный выход лута за экспедицию (единицы ресурсов).
+@export var expedition_loot_min: int = 3
+@export var expedition_loot_max: int = 8
+## Шанс провала экспедиции (0.0 – 1.0).
+@export var expedition_failure_chance: float = 0.1
+
 @export_group("Зомби / стада")
 ## Радиус, в котором зомби замечает другого и присоединяется к его стаду.
 @export var zombie_join_herd_radius: float = 120.0

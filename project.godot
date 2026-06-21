@@ -10,7 +10,7 @@ config_version=5
 
 config/name="Hollow Reach"
 config/description="Survival base-builder против зомби. Люди опаснее зомби."
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
 config/icon="res://icon.svg"
 
@@ -20,6 +20,7 @@ EventBus="*res://autoload/event_bus.gd"
 GameState="*res://autoload/game_state.gd"
 SaveSystem="*res://autoload/save_system.gd"
 NotificationManager="*res://autoload/notification_manager.gd"
+GameLoopManager="*res://autoload/game_loop_manager.gd"
 
 [display]
 

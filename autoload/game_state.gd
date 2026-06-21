@@ -29,6 +29,12 @@ var roster_ability_ids: Array[String] = []
 # --- Журнал визитёров (для Diary/Journal UI) ---
 var visitor_journal: Array[Dictionary] = []
 
+# --- Экспедиции: ability_id → дней до возвращения ---
+var active_expeditions: Dictionary = {}
+
+# --- Игровой цикл ---
+var game_over_reason: String = ""
+
 # --- Баланс (выносим числа из логики сюда) ---
 var balance: GameBalance
 
@@ -92,6 +98,7 @@ func to_dict() -> Dictionary:
 		"resources": resources.duplicate(true),
 		"roster_ability_ids": roster_ability_ids.duplicate(),
 		"visitor_journal": visitor_journal.duplicate(true),
+		"active_expeditions": active_expeditions.duplicate(true),
 	}
 
 func from_dict(data: Dictionary) -> void:
@@ -102,3 +109,16 @@ func from_dict(data: Dictionary) -> void:
 	resources = (data.get("resources", {}) as Dictionary).duplicate(true)
 	roster_ability_ids.assign(data.get("roster_ability_ids", []))
 	visitor_journal.assign(data.get("visitor_journal", []))
+	active_expeditions = (data.get("active_expeditions", {}) as Dictionary).duplicate(true)
+
+## Сброс в состояние новой игры (вызывается GameLoopManager).
+func reset() -> void:
+	current_day = 1
+	is_night = false
+	group_morale = 0.7
+	raider_reputation = 0.0
+	resources = {"food": 20, "materials": 15, "medicine": 5}
+	roster_ability_ids.clear()
+	visitor_journal.clear()
+	active_expeditions.clear()
+	game_over_reason = ""

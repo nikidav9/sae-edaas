@@ -1,9 +1,8 @@
 extends Node
-## Корневой узел игры. Поднимает игровые системы как дочерние узлы.
+## Корневой узел игры. Поднимает все игровые системы как дочерние узлы.
 ##
-## Системы живут здесь (не в autoload/), как требует архитектура: autoload —
-## только GameState/EventBus/SaveSystem/NotificationManager. Системы общаются
-## между собой исключительно через EventBus.
+## Порядок создания: сначала системы без зависимостей, затем те что нужны
+## другим системам. Связи между системами устанавливаются после add_child().
 
 var noise_system: NoiseSystem
 var horde_system: HordeSystem
@@ -13,22 +12,28 @@ var day_night_system: DayNightSystem
 var dialogue_system: DialogueSystem
 var npc_manager: NPCManager
 var building_system: BuildingSystem
-
-# --- Зомби-системы ---
 var stimulus_system: StimulusSystem
 var herd_manager: HerdManager
 var zombie_pool: ZombiePool
+var raid_system: RaidSystem
+var expedition_system: ExpeditionSystem
+var audio_system: AudioSystem
+
+@onready var player: PlayerController = $PlayerController
+@onready var joystick: VirtualJoystick = $GameUI/VirtualJoystick
+@onready var expedition_panel: ExpeditionPanel = $ExpeditionPanel
 
 func _ready() -> void:
+	# --- Базовые системы (без зависимостей) ---
 	noise_system = NoiseSystem.new()
 	noise_system.name = "NoiseSystem"
 	add_child(noise_system)
 
-	# Зомби-системы: порядок важен — stimulus → herd → pool → horde.
 	stimulus_system = StimulusSystem.new()
 	stimulus_system.name = "StimulusSystem"
 	add_child(stimulus_system)
 
+	# --- Стадо зомби (herd зависит от pool, pool создаётся следом) ---
 	herd_manager = HerdManager.new()
 	herd_manager.name = "HerdManager"
 	add_child(herd_manager)
@@ -37,7 +42,6 @@ func _ready() -> void:
 	zombie_pool.name = "ZombiePool"
 	add_child(zombie_pool)
 
-	# Связываем зависимости после создания всех узлов.
 	herd_manager.zombie_pool = zombie_pool
 	zombie_pool.herd_manager = herd_manager
 	zombie_pool.stimulus_system = stimulus_system
@@ -48,6 +52,12 @@ func _ready() -> void:
 	horde_system.herd_manager = herd_manager
 	add_child(horde_system)
 
+	# --- Рейды ---
+	raid_system = RaidSystem.new()
+	raid_system.name = "RaidSystem"
+	add_child(raid_system)
+
+	# --- Социальные системы ---
 	visitor_system = VisitorSystem.new()
 	visitor_system.name = "VisitorSystem"
 	add_child(visitor_system)
@@ -72,7 +82,29 @@ func _ready() -> void:
 	building_system.name = "BuildingSystem"
 	add_child(building_system)
 
-## Вызывается WorldMap после генерации — устанавливает позицию базы.
+	expedition_system = ExpeditionSystem.new()
+	expedition_system.name = "ExpeditionSystem"
+	add_child(expedition_system)
+
+	audio_system = AudioSystem.new()
+	audio_system.name = "AudioSystem"
+	add_child(audio_system)
+
+	# --- Связываем игрока с джойстиком ---
+	if player and joystick:
+		player.joystick = joystick
+
+	# --- Связываем ExpeditioPanel с системой ---
+	if expedition_panel:
+		expedition_panel.setup(expedition_system)
+
+## Вызывается WorldMap после генерации карты.
 func set_base_position(pos: Vector2) -> void:
 	npc_manager.base_position = pos
 	herd_manager.base_position = pos
+	raid_system.base_position = pos
+
+## Кнопка атаки — вызывается из UI.
+func _on_attack_button_pressed() -> void:
+	if player:
+		player.swing()

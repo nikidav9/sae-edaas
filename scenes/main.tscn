@@ -1,15 +1,41 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/dialogue_ui.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/day_notification.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/build_menu.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player/player_controller.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ui/virtual_joystick.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/ui/expedition_panel.tscn" id="8"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1")
 
+[node name="PlayerController" parent="." instance=ExtResource("6")]
+
 [node name="HUD" parent="." instance=ExtResource("3")]
+
 [node name="DialogueUI" parent="." instance=ExtResource("2")]
+
 [node name="DayNotification" parent="." instance=ExtResource("4")]
+
 [node name="BuildMenu" parent="." instance=ExtResource("5")]
+
+[node name="ExpeditionPanel" parent="." instance=ExtResource("8")]
+
+[node name="GameUI" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="VirtualJoystick" parent="GameUI" instance=ExtResource("7")]
+
+[node name="AttackButton" type="Button" parent="GameUI"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -200
+offset_right = -16
+offset_bottom = -16
+text = "⚔"
+theme_override_font_sizes/font_size = 36

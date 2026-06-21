@@ -52,6 +52,24 @@ signal build_mode_exited()
 signal save_completed(slot: int)
 signal load_completed(slot: int)
 
+# --- Игровой цикл ---
+signal game_started()
+signal game_over(reason: String)
+
+# --- Игрок ---
+signal player_damaged(amount: int, remaining_health: int)
+signal player_died()
+
+# --- Рейдеры ---
+signal raid_incoming(raider_count: int)
+signal raid_started(raider_count: int)
+signal raid_ended(repelled: bool)
+
+# --- Экспедиции ---
+signal expedition_started(npc_ability_id: String)
+signal expedition_completed(npc_ability_id: String, loot: Array)
+signal expedition_failed(npc_ability_id: String, reason: String)
+
 # --- Зомби / стада ---
 ## Новый стимул появился на карте (тип: StimulusSystem.StimulusType).
 signal stimulus_emitted(stimulus_type: int, position: Vector2, strength: float)

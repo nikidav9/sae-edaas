@@ -88,6 +88,58 @@ func _on_day_passed(_day: int) -> void:
 		if b and b.is_built and b.building_data and b.building_data.id == &"campfire":
 			GameState.change_morale(0.02)
 
+# --- Восстановление из сейва ---
+
+## Вызывается SaveSystem после load_game. data = BaseGrid.to_dict().
+func restore(data: Dictionary) -> void:
+	# Сначала сносим всё текущее.
+	for cell in _placed.duplicate():
+		var b := _placed[cell] as Building
+		if b:
+			b.queue_free()
+	_placed.clear()
+	total_defense_bonus = 0
+	if grid:
+		grid._occupied.clear()
+		grid._buildings.clear()
+
+	for key in data:
+		var parts := (key as String).split(",")
+		if parts.size() < 2:
+			continue
+		var cell := Vector2i(int(parts[0]), int(parts[1]))
+		var entry: Dictionary = data[key]
+		var building_id := StringName(entry.get("id", ""))
+		var building_data := _find_in_catalogue(building_id)
+		if building_data == null:
+			push_warning("BuildingSystem.restore: неизвестное здание '%s'" % building_id)
+			continue
+		var building := BUILDING_SCENE.instantiate() as Building
+		building.building_data = building_data
+		building.position = grid.cell_to_world(cell)
+		building.scale = Vector2(building_data.size_cells)
+		# Восстанавливаем здоровье и статус строительства.
+		building.current_health = int(entry.get("health", building_data.max_health))
+		var days_left := int(entry.get("days_left", 0))
+		if days_left <= 0:
+			# Уже построено — пропускаем анимацию стройки.
+			building.is_built = true
+		else:
+			building.construction_days_left = days_left
+		add_child(building)
+		building.construction_completed.connect(_on_construction_completed.bind(cell))
+		building.destroyed.connect(_on_building_node_destroyed.bind(building_data, cell))
+		grid.occupy(building_data, cell, building)
+		_placed[cell] = building
+		if building.is_built:
+			total_defense_bonus += building_data.defense_bonus
+
+func _find_in_catalogue(id: StringName) -> BuildingData:
+	for b in catalogue:
+		if b.id == id:
+			return b
+	return null
+
 # --- Запросы извне ---
 
 func get_catalogue() -> Array[BuildingData]:

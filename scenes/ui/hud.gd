@@ -15,6 +15,8 @@ const PHASE_ICONS: Array[String] = ["🌅", "☀️", "🌇", "🌙"]
 @onready var journal_button: Button = %JournalButton
 @onready var journal_panel: JournalPanel = %JournalPanel
 @onready var build_button: Button = %BuildButton
+@onready var save_button: Button = %SaveButton
+@onready var save_menu: SaveMenu = %SaveMenu
 
 func _ready() -> void:
 	EventBus.day_passed.connect(_on_day_passed)
@@ -45,3 +47,6 @@ func _on_journal_button_pressed() -> void:
 
 func _on_build_button_pressed() -> void:
 	EventBus.build_mode_entered.emit()
+
+func _on_save_button_pressed() -> void:
+	save_menu.toggle_save()

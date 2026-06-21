@@ -17,7 +17,10 @@ func _ready() -> void:
 	%CloseButton.pressed.connect(_on_close_pressed)
 	EventBus.expedition_completed.connect(_on_expedition_resolved.bind(true))
 	EventBus.expedition_failed.connect(func(aid, _r): _on_expedition_resolved(aid, false))
-	EventBus.npc_recruited.connect(func(_d): _rebuild() if visible else pass)
+	EventBus.npc_recruited.connect(func(_d):
+		if visible:
+			_rebuild()
+	)
 
 func setup(exp_system: ExpeditionSystem) -> void:
 	_expedition_system = exp_system

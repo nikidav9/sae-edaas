@@ -10,6 +10,10 @@ size = Vector2(32, 32)
 script = ExtResource("1")
 collision_layer = 4
 
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.55, 0.5, 0.4, 1)
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("shape")
 

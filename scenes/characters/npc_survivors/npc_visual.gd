@@ -1,15 +1,15 @@
 extends Node2D
 class_name NPCVisual
 ## Внешность выжившего NPC — рисуется через _draw().
-## Все 5 ролей имеют уникальный силуэт, одежду и снаряжение.
+## Чиби-пропорции: большая голова, широкое тело, короткие ноги.
 ## Анимация ходьбы: покачивание тела + маховые движения ног.
 
 enum Role { SNIPER, MECHANIC, MEDIC, SCOUT, FARMER }
 
-const SKIN      := Color(0.74, 0.57, 0.43)
-const HAIR_DARK := Color(0.18, 0.13, 0.09)
-const HAIR_LITE := Color(0.50, 0.37, 0.18)
-const DARK_BOOT := Color(0.14, 0.11, 0.08)
+const SKIN      := Color(0.72, 0.55, 0.40)
+const HAIR_DARK := Color(0.22, 0.16, 0.10)
+const HAIR_LITE := Color(0.52, 0.38, 0.18)
+const DARK_BOOT := Color(0.15, 0.11, 0.08)
 
 var _role: Role = Role.SCOUT
 var _walk_phase: float = 0.0
@@ -55,204 +55,258 @@ func _ability_to_role(id: StringName) -> Role:
 	return Role.SCOUT
 
 # ─── Снайпер ──────────────────────────────────────────────────────────────────
-# Тёмный тактический костюм, красная бандана на лице, длинная винтовка
+# Большой тактический капюшон, широкий плащ, диагональная винтовка
 
 func _sniper(b: float, ll: float, rl: float) -> void:
-	var jac  := Color(0.22, 0.25, 0.18)
-	var pan  := Color(0.16, 0.15, 0.12)
-	var bnd  := Color(0.52, 0.07, 0.07)  # бандана
-	var gun  := Color(0.13, 0.11, 0.09)
+	var hood  := Color(0.204, 0.165, 0.118)
+	var coat  := Color(0.267, 0.220, 0.149)
+	var coat2 := Color(0.220, 0.180, 0.118)
+	var scrf  := Color(0.373, 0.314, 0.235)
+	var pan   := Color(0.180, 0.149, 0.110)
+	var gun   := Color(0.157, 0.133, 0.094)
 
-	# Сапоги
-	draw_rect(Rect2(-6.0 + ll, 9.5 + b, 5.5, 3.5), DARK_BOOT)
-	draw_rect(Rect2(0.5  + rl, 9.5 + b, 5.5, 3.5), DARK_BOOT)
-	# Тактические штаны
-	draw_rect(Rect2(-5.0 + ll, 4.0 + b, 4.0, 7.0), pan)
-	draw_rect(Rect2(1.0  + rl, 4.0 + b, 4.0, 7.0), pan)
-	# Тактическая куртка (узкая, поджарый силуэт)
-	draw_rect(Rect2(-5.0, -4.0 + b, 10.0, 9.0), jac)
-	# Наплечник
-	draw_rect(Rect2(-6.0, -4.0 + b, 3.0, 4.0), jac.darkened(0.2))
-	# Шея
-	draw_rect(Rect2(-2.0, -5.5 + b, 4.0, 2.5), SKIN)
-	# Голова
-	draw_circle(Vector2(0.0, -9.5 + b), 5.0, SKIN)
-	# Бандана (нижняя половина лица)
-	draw_rect(Rect2(-5.0, -8.5 + b, 10.0, 4.0), bnd)
-	# Тактические очки / козырёк (полоса сверху)
-	draw_rect(Rect2(-5.5, -15.0 + b, 11.0, 2.5), Color(0.20, 0.20, 0.18))
-	draw_rect(Rect2(-2.0, -15.0 + b, 8.0,  1.5), Color(0.30, 0.32, 0.28))
-	# Волосы под козырьком
-	draw_rect(Rect2(-5.0, -14.5 + b, 10.0, 6.5), HAIR_DARK)
-	# Взгляд (узкая щель между козырьком и бандой)
-	draw_rect(Rect2(-4.0, -11.5 + b,  3.5, 1.5), Color(0.10, 0.14, 0.22))
-	# Винтовка (от плеча вправо-вниз)
-	draw_line(Vector2(5.0, -1.5 + b), Vector2(19.0,  6.0 + b), gun, 2.5)
-	draw_line(Vector2(5.0, -1.5 + b), Vector2( 5.0,  3.5 + b), Color(0.28, 0.22, 0.14), 4.0)
-	# Ствол (тонкий)
-	draw_line(Vector2(9.0, 1.0 + b), Vector2(19.0, 6.0 + b), gun.lightened(0.1), 1.0)
+	# Винтовка (за спиной, рисуется первой — позади тела)
+	draw_line(Vector2(-5.0, -11.0 + b), Vector2(11.0, 8.0 + b), gun, 2.0)
+	draw_line(Vector2(-5.0, -11.0 + b), Vector2(-9.0, -6.0 + b), gun, 1.5)
+	# Сапоги + ноги
+	draw_rect(Rect2(-9.0 + ll, 10.0 + b, 8.0, 5.0), DARK_BOOT)
+	draw_rect(Rect2(1.0 + rl, 10.0 + b, 8.0, 5.0), DARK_BOOT)
+	draw_rect(Rect2(-7.0 + ll, 5.0 + b, 5.5, 6.0), pan)
+	draw_rect(Rect2(1.5 + rl, 5.0 + b, 5.5, 6.0), pan)
+	# Плащ (широкий, слоями)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-11.0, 0.0 + b), Vector2(-12.0, 10.0 + b),
+		Vector2(12.0, 10.0 + b), Vector2(11.0, 0.0 + b)]), coat2)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-9.0, -5.0 + b), Vector2(-11.0, 10.0 + b),
+		Vector2(11.0, 10.0 + b), Vector2(9.0, -5.0 + b)]), coat)
+	# Шарф на шее
+	draw_rect(Rect2(-8.0, -5.0 + b, 16.0, 5.0), scrf)
+	draw_rect(Rect2(-5.0, -6.0 + b, 10.0, 3.0), scrf.darkened(0.15))
+	# Голова (кожа)
+	draw_circle(Vector2(0.0, -9.0 + b), 7.0, SKIN)
+	# Большой тактический капюшон
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-8.0, -5.0 + b), Vector2(-10.0, -13.0 + b),
+		Vector2(-5.0, -21.0 + b), Vector2(5.0, -21.0 + b),
+		Vector2(10.0, -13.0 + b), Vector2(8.0, -5.0 + b)]), hood)
+	# Тень внутри капюшона
+	draw_rect(Rect2(-6.0, -14.0 + b, 12.0, 9.0), Color(0.078, 0.059, 0.039))
+	# Прорезь для глаз
+	draw_rect(Rect2(-5.0, -10.0 + b, 10.0, 3.0), SKIN)
+	draw_rect(Rect2(-4.0, -10.0 + b, 3.0, 2.5), Color(0.12, 0.16, 0.24))
+	draw_rect(Rect2(1.0, -10.0 + b, 3.0, 2.5), Color(0.12, 0.16, 0.24))
+	# Складка капюшона
+	draw_line(Vector2(-5.0, -20.0 + b), Vector2(-10.0, -13.0 + b), hood.lightened(0.08), 1.0)
 
 # ─── Механик ──────────────────────────────────────────────────────────────────
-# Рабочая куртка, жёлтый инструментальный пояс, гаечный ключ в руке
+# Огромные очки-гоглы, рабочая куртка, гаечный ключ
 
 func _mechanic(b: float, ll: float, rl: float) -> void:
-	var jac   := Color(0.38, 0.28, 0.15)
-	var pan   := Color(0.26, 0.22, 0.14)
-	var belt  := Color(0.58, 0.46, 0.16)
+	var coat  := Color(0.35, 0.26, 0.14)
+	var belt  := Color(0.58, 0.46, 0.15)
+	var pan   := Color(0.24, 0.20, 0.12)
 	var metal := Color(0.44, 0.48, 0.54)
-	var grease:= Color(0.22, 0.18, 0.12)  # грязь/масло
+	var goggl := Color(0.18, 0.28, 0.42)
+	var patch := Color(0.28, 0.22, 0.12)
 
-	# Тяжёлые рабочие сапоги
-	draw_rect(Rect2(-7.0 + ll, 9.0 + b, 6.5, 4.0), DARK_BOOT)
-	draw_rect(Rect2(0.5  + rl, 9.0 + b, 6.5, 4.0), DARK_BOOT)
-	# Штаны
-	draw_rect(Rect2(-6.0 + ll, 4.0 + b, 5.0, 7.0), pan)
-	draw_rect(Rect2(1.0  + rl, 4.0 + b, 5.0, 7.0), pan)
-	# Куртка (широкая — коренастый)
-	draw_rect(Rect2(-7.0, -4.5 + b, 14.0, 9.5), jac)
-	# Нагрудный карман
-	draw_rect(Rect2(-4.5, -3.5 + b, 5.0, 4.5), jac.darkened(0.12))
+	# Сапоги + ноги
+	draw_rect(Rect2(-9.0 + ll, 10.0 + b, 8.0, 6.0), DARK_BOOT)
+	draw_rect(Rect2(1.0 + rl, 10.0 + b, 8.0, 6.0), DARK_BOOT)
+	draw_rect(Rect2(-8.0 + ll, 5.0 + b, 6.0, 6.0), pan)
+	draw_rect(Rect2(2.0 + rl, 5.0 + b, 6.0, 6.0), pan)
+	# Рабочая куртка (широкая)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-9.0, -5.0 + b), Vector2(-12.0, 11.0 + b),
+		Vector2(12.0, 11.0 + b), Vector2(9.0, -5.0 + b)]), coat)
+	# Рукава
+	draw_rect(Rect2(-9.0, -4.0 + b, 5.0, 5.0), coat)
+	draw_rect(Rect2(4.0, -4.0 + b, 5.0, 5.0), coat)
+	# Нагрудный карман (заплатка)
+	draw_rect(Rect2(-6.0, 0.0 + b, 5.0, 5.0), patch)
+	draw_rect(Rect2(-5.0, 1.0 + b, 3.0, 3.0), patch.darkened(0.2))
 	# Инструментальный пояс
-	draw_rect(Rect2(-7.0, 2.5 + b, 14.0, 3.0), belt)
-	draw_rect(Rect2(-2.0, 2.8 + b,  4.0, 2.5), belt.darkened(0.3))  # пряжка
-	# Шея
-	draw_rect(Rect2(-2.0, -5.5 + b, 4.0, 2.0), SKIN)
-	# Голова (округлая)
-	draw_circle(Vector2(0.0, -9.0 + b), 5.5, SKIN)
-	# Пятна масла на лице
-	draw_rect(Rect2(1.5, -10.5 + b, 3.0, 1.5), grease)
-	draw_rect(Rect2(-4.0, -8.5 + b, 2.0, 1.0), grease)
-	# Взлохмаченные светлые волосы
-	draw_rect(Rect2(-5.5, -14.5 + b, 11.0, 6.0), HAIR_LITE)
-	draw_rect(Rect2(-5.5, -14.5 + b,  4.0, 2.5), HAIR_LITE.darkened(0.15))
-	draw_rect(Rect2( 3.0, -14.5 + b,  2.5, 3.0), HAIR_LITE.lightened(0.1))
-	# Глаза
-	draw_rect(Rect2(-4.0, -11.0 + b, 3.0, 2.0), Color(0.32, 0.26, 0.14))
-	draw_rect(Rect2( 1.0, -11.0 + b, 3.0, 2.0), Color(0.32, 0.26, 0.14))
+	draw_rect(Rect2(-10.0, 4.0 + b, 20.0, 3.0), belt)
+	draw_rect(Rect2(-2.0, 4.5 + b, 4.0, 2.0), belt.darkened(0.3))
+	draw_line(Vector2(6.0, 5.0 + b), Vector2(6.0, 11.0 + b), metal, 1.5)
 	# Гаечный ключ
-	draw_line(Vector2(-7.0, -2.0 + b), Vector2(-13.0,  5.5 + b), Color(0.36, 0.32, 0.22), 2.5)
-	draw_rect(Rect2(-16.0, 3.5 + b, 5.5, 3.0), metal)   # головка
-	draw_rect(Rect2(-16.5, 4.0 + b, 7.0, 1.5), metal)   # широкая часть
+	draw_line(Vector2(-12.0, -1.0 + b), Vector2(-14.0, 8.0 + b), Color(0.36, 0.34, 0.22), 2.0)
+	draw_rect(Rect2(-16.0, 6.0 + b, 5.5, 3.0), metal)
+	draw_rect(Rect2(-16.5, 6.5 + b, 7.0, 1.5), metal)
+	# Шея + голова
+	draw_rect(Rect2(-3.0, -5.0 + b, 6.0, 3.0), SKIN)
+	draw_circle(Vector2(0.0, -10.0 + b), 7.5, SKIN)
+	# Взлохмаченные волосы
+	draw_rect(Rect2(-7.0, -17.0 + b, 14.0, 8.0), HAIR_LITE)
+	draw_rect(Rect2(-8.0, -16.0 + b, 4.0, 3.0), HAIR_LITE.darkened(0.1))
+	draw_rect(Rect2(4.0, -16.0 + b, 3.0, 4.0), HAIR_LITE.lightened(0.08))
+	# Очки-гоглы (главная черта!)
+	draw_rect(Rect2(-8.0, -13.0 + b, 7.0, 5.0), goggl)
+	draw_rect(Rect2(1.0, -13.0 + b, 7.0, 5.0), goggl)
+	draw_line(Vector2(-1.0, -11.0 + b), Vector2(1.0, -11.0 + b), metal, 2.0)
+	draw_rect(Rect2(-7.0, -12.0 + b, 5.0, 3.0), goggl.lightened(0.18))
+	draw_rect(Rect2(2.0, -12.0 + b, 5.0, 3.0), goggl.lightened(0.18))
+	draw_rect(Rect2(-8.0, -13.0 + b, 16.0, 1.5), Color(0.25, 0.22, 0.18))
+	draw_rect(Rect2(-8.0, -8.0 + b, 16.0, 1.0), Color(0.25, 0.22, 0.18))
+	# Пятна масла
+	draw_rect(Rect2(-2.0, -6.0 + b, 4.0, 2.0), Color(0.22, 0.18, 0.12))
+	draw_line(Vector2(-2.0, -7.5 + b), Vector2(2.0, -7.5 + b), SKIN.darkened(0.25), 1.0)
 
 # ─── Медик ────────────────────────────────────────────────────────────────────
-# Белый (грязный) халат, красный крест на груди, аптечка на боку
+# Белый халат с красным крестом, медицинская шапочка, очки, аптечка
 
 func _medic(b: float, ll: float, rl: float) -> void:
-	var coat  := Color(0.80, 0.82, 0.78)
-	var pan   := Color(0.22, 0.22, 0.26)
+	var coat  := Color(0.82, 0.84, 0.80)
 	var cross := Color(0.76, 0.10, 0.10)
+	var pan   := Color(0.22, 0.22, 0.26)
 	var bag   := Color(0.70, 0.70, 0.65)
-	var glass := Color(0.28, 0.40, 0.58, 0.82)
+	var cap   := Color(0.78, 0.80, 0.76)
 
-	# Сапоги
-	draw_rect(Rect2(-5.5 + ll, 9.5 + b, 5.0, 3.5), DARK_BOOT)
-	draw_rect(Rect2(0.5  + rl, 9.5 + b, 5.0, 3.5), DARK_BOOT)
-	# Брюки
-	draw_rect(Rect2(-5.0 + ll, 4.0 + b, 4.0, 7.0), pan)
-	draw_rect(Rect2(1.0  + rl, 4.0 + b, 4.0, 7.0), pan)
-	# Аптечка на боку (рисуем до халата — будет частично за ним)
-	draw_rect(Rect2(5.5, -1.5 + b, 7.5, 7.0), bag)
-	draw_rect(Rect2(7.0,  0.0 + b, 2.0, 4.5), cross)
-	draw_rect(Rect2(6.0,  1.8 + b, 5.5, 1.5), cross)
-	draw_line(Vector2(5.5, -1.5 + b), Vector2(5.0, -3.5 + b), Color(0.50, 0.45, 0.35), 1.5)  # ремень
-	# Халат
-	draw_rect(Rect2(-6.0, -5.0 + b, 12.0, 10.0), coat)
+	# Аптечка на боку (рисуется первой — частично за халатом)
+	draw_rect(Rect2(7.0, -2.0 + b, 8.0, 8.0), bag)
+	draw_rect(Rect2(8.5, 0.0 + b, 2.0, 5.0), cross)
+	draw_rect(Rect2(7.5, 2.0 + b, 5.0, 1.5), cross)
+	draw_line(Vector2(7.0, -2.0 + b), Vector2(6.0, -5.0 + b), Color(0.50, 0.48, 0.42), 1.5)
+	# Сапоги + ноги
+	draw_rect(Rect2(-8.0 + ll, 10.0 + b, 7.0, 5.0), DARK_BOOT)
+	draw_rect(Rect2(1.0 + rl, 10.0 + b, 7.0, 5.0), DARK_BOOT)
+	draw_rect(Rect2(-7.0 + ll, 5.0 + b, 5.0, 6.0), pan)
+	draw_rect(Rect2(2.0 + rl, 5.0 + b, 5.0, 6.0), pan)
+	# Белый халат
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-8.0, -5.0 + b), Vector2(-10.0, 11.0 + b),
+		Vector2(10.0, 11.0 + b), Vector2(8.0, -5.0 + b)]), coat)
 	# Красный крест на груди
-	draw_rect(Rect2(-1.5, -4.0 + b, 3.0,  7.5), cross)
-	draw_rect(Rect2(-4.5, -1.0 + b, 9.0,  2.5), cross)
-	# Воротник
-	draw_rect(Rect2(-3.0, -5.0 + b, 6.0,  2.5), coat.darkened(0.1))
-	# Шея
-	draw_rect(Rect2(-2.0, -6.0 + b, 4.0,  2.0), SKIN)
-	# Голова
-	draw_circle(Vector2(0.0, -9.5 + b), 5.0, SKIN)
-	# Тёмные волосы (собранные)
-	draw_rect(Rect2(-5.0, -14.5 + b, 10.0, 5.5), HAIR_DARK)
-	draw_rect(Rect2(-5.0, -13.5 + b,  5.0, 3.0), HAIR_DARK.lightened(0.05))
+	draw_rect(Rect2(-1.5, -3.0 + b, 3.0, 8.0), cross)
+	draw_rect(Rect2(-4.5, 0.0 + b, 9.0, 2.5), cross)
+	# Отвороты халата
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-8.0, -5.0 + b), Vector2(-5.0, -5.0 + b),
+		Vector2(-3.0, 2.0 + b), Vector2(-8.0, 4.0 + b)]), coat.darkened(0.08))
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(8.0, -5.0 + b), Vector2(5.0, -5.0 + b),
+		Vector2(3.0, 2.0 + b), Vector2(8.0, 4.0 + b)]), coat.darkened(0.08))
+	# Шея + голова
+	draw_rect(Rect2(-3.0, -5.0 + b, 6.0, 2.0), SKIN)
+	draw_circle(Vector2(0.0, -10.0 + b), 7.0, SKIN)
+	# Тёмные волосы
+	draw_rect(Rect2(-6.0, -17.0 + b, 12.0, 7.0), HAIR_DARK)
+	draw_rect(Rect2(-6.0, -16.0 + b, 5.0, 4.0), HAIR_DARK.lightened(0.04))
+	# Белая медицинская шапочка с красной полосой
+	draw_rect(Rect2(-7.0, -17.0 + b, 14.0, 5.0), cap)
+	draw_rect(Rect2(-7.0, -17.0 + b, 14.0, 1.5), cross)
 	# Очки
-	draw_rect(Rect2(-5.0, -11.5 + b, 3.5, 2.5), glass)
-	draw_rect(Rect2( 1.5, -11.5 + b, 3.5, 2.5), glass)
-	draw_line(Vector2(-1.5, -10.5 + b), Vector2(1.5, -10.5 + b), Color(0.45, 0.42, 0.38), 1.0)
+	draw_rect(Rect2(-6.0, -12.0 + b, 5.0, 3.0), Color(0.28, 0.40, 0.58))
+	draw_rect(Rect2(1.0, -12.0 + b, 5.0, 3.0), Color(0.28, 0.40, 0.58))
+	draw_line(Vector2(-1.0, -10.5 + b), Vector2(1.0, -10.5 + b), Color(0.45, 0.42, 0.38), 1.0)
+	# Добрая улыбка
+	draw_line(Vector2(-2.0, -8.0 + b), Vector2(2.0, -8.0 + b), SKIN.darkened(0.22), 1.5)
 
 # ─── Разведчик ────────────────────────────────────────────────────────────────
-# Тёмный капюшон, рюкзак за спиной, лёгкое снаряжение
+# Тёмный капюшон с глубокой тенью, лёгкая куртка, рюкзак, шарф
 
 func _scout(b: float, ll: float, rl: float) -> void:
-	var jac  := Color(0.26, 0.30, 0.22)
-	var hood := Color(0.18, 0.22, 0.16)
-	var pan  := Color(0.25, 0.22, 0.15)
+	var hood := Color(0.20, 0.24, 0.18)
+	var jac  := Color(0.28, 0.32, 0.24)
+	var pan  := Color(0.24, 0.21, 0.14)
 	var pack := Color(0.40, 0.34, 0.20)
-	var strap:= Color(0.30, 0.24, 0.14)
+	var strp := Color(0.30, 0.24, 0.14)
+	var scrf := Color(0.26, 0.30, 0.22)
 
-	# Сапоги
-	draw_rect(Rect2(-5.0 + ll, 9.5 + b, 4.5, 3.5), DARK_BOOT)
-	draw_rect(Rect2(0.5  + rl, 9.5 + b, 4.5, 3.5), DARK_BOOT)
-	# Штаны (лёгкие)
-	draw_rect(Rect2(-4.5 + ll, 4.0 + b, 3.5, 7.0), pan)
-	draw_rect(Rect2(1.0  + rl, 4.0 + b, 3.5, 7.0), pan)
-	# Рюкзак за спиной (слева — видна при повороте)
-	draw_rect(Rect2(-10.0, -4.5 + b, 6.0, 10.0), pack)
-	draw_rect(Rect2(-10.5, -2.5 + b, 2.0,  6.0), strap)  # лямка
-	draw_rect(Rect2( -9.0,  2.5 + b, 4.5,  2.0), strap)  # поясной ремень
-	# Куртка с капюшоном
-	draw_rect(Rect2(-5.0, -5.0 + b, 10.0, 10.0), jac)
-	# Капюшон (трапециевидный)
-	var hd := PackedVector2Array([
-		Vector2(-6.5, -4.5 + b),
-		Vector2(-5.0, -16.0 + b),
-		Vector2( 5.0, -16.0 + b),
-		Vector2( 6.5, -4.5 + b),
-	])
-	draw_colored_polygon(hd, hood)
-	# Лицо в тени (кожа)
-	draw_circle(Vector2(0.0, -9.5 + b), 4.5, SKIN)
-	# Тень от капюшона на лице
-	draw_rect(Rect2(-4.5, -14.0 + b, 9.0, 4.0), hood)
-	draw_rect(Rect2(-4.5, -11.5 + b, 9.0, 2.0), Color(0.0, 0.0, 0.0, 0.30))
-	# Глаза (почти скрыты в тени)
-	draw_rect(Rect2(-3.5, -11.0 + b, 2.5, 1.5), Color(0.10, 0.14, 0.20, 0.85))
+	# Рюкзак (позади тела)
+	draw_rect(Rect2(-13.0, -4.0 + b, 7.0, 12.0), pack)
+	draw_rect(Rect2(-13.5, -2.0 + b, 2.0, 8.0), strp)
+	draw_rect(Rect2(-11.0, 6.0 + b, 5.0, 2.0), strp)
+	draw_rect(Rect2(-11.0, 0.0 + b, 5.0, 1.0), pack.darkened(0.2))
+	draw_rect(Rect2(-12.0, -3.0 + b, 6.0, 1.5), pack.darkened(0.15))
+	# Сапоги + ноги
+	draw_rect(Rect2(-8.0 + ll, 10.0 + b, 7.0, 4.0), Color(0.18, 0.15, 0.10))
+	draw_rect(Rect2(1.0 + rl, 10.0 + b, 7.0, 4.0), Color(0.18, 0.15, 0.10))
+	draw_rect(Rect2(-7.0 + ll, 5.0 + b, 5.5, 6.0), pan)
+	draw_rect(Rect2(1.5 + rl, 5.0 + b, 5.5, 6.0), pan)
+	# Куртка
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-7.0, -5.0 + b), Vector2(-9.0, 10.0 + b),
+		Vector2(9.0, 10.0 + b), Vector2(7.0, -5.0 + b)]), jac)
+	# Капюшон (первый слой)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-7.0, -5.0 + b), Vector2(-8.0, -12.0 + b),
+		Vector2(-3.0, -21.0 + b), Vector2(3.0, -21.0 + b),
+		Vector2(8.0, -12.0 + b), Vector2(7.0, -5.0 + b)]), hood)
+	# Лицо (кожа)
+	draw_circle(Vector2(0.0, -9.5 + b), 6.5, SKIN)
+	# Капюшон (второй слой поверх лица)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-7.0, -5.0 + b), Vector2(-8.0, -12.0 + b),
+		Vector2(-3.0, -21.0 + b), Vector2(3.0, -21.0 + b),
+		Vector2(8.0, -12.0 + b), Vector2(7.0, -5.0 + b)]), hood)
+	# Глубокая тень внутри капюшона
+	draw_rect(Rect2(-5.0, -15.0 + b, 10.0, 8.0), Color(0.06, 0.08, 0.05))
+	# Лицо в тени
+	draw_rect(Rect2(-4.0, -11.0 + b, 8.0, 5.0), SKIN.darkened(0.20))
+	# Зоркие глаза
+	draw_rect(Rect2(-3.5, -10.0 + b, 3.0, 2.0), Color(0.14, 0.18, 0.28))
+	draw_rect(Rect2(0.5, -10.0 + b, 3.0, 2.0), Color(0.14, 0.18, 0.28))
+	# Шарф на нижней части лица
+	draw_rect(Rect2(-5.0, -7.0 + b, 10.0, 3.5), scrf)
+	# Складки капюшона
+	draw_line(Vector2(-7.0, -5.0 + b), Vector2(-8.0, -12.0 + b), hood.lightened(0.07), 1.0)
+	draw_line(Vector2(7.0, -5.0 + b), Vector2(8.0, -12.0 + b), hood.lightened(0.07), 1.0)
 
 # ─── Фермер ───────────────────────────────────────────────────────────────────
-# Комбинезон, соломенная шляпа, мотыга в руке
+# Широкая соломенная шляпа, комбинезон, румяные щёки, мотыга
 
 func _farmer(b: float, ll: float, rl: float) -> void:
-	var ovr  := Color(0.38, 0.30, 0.15)
-	var shirt:= Color(0.60, 0.50, 0.34)
-	var hat  := Color(0.60, 0.48, 0.22)
-	var hat_b:= Color(0.42, 0.32, 0.14)
-	var hoe_h:= Color(0.42, 0.35, 0.22)
+	var ovr  := Color(0.40, 0.32, 0.16)
+	var shrt := Color(0.62, 0.52, 0.36)
+	var hat  := Color(0.62, 0.50, 0.24)
+	var hat_b:= Color(0.44, 0.34, 0.16)
+	var hoe_h:= Color(0.44, 0.36, 0.22)
 	var hoe_m:= Color(0.40, 0.44, 0.50)
+	var fbot := Color(0.22, 0.16, 0.09)
 
-	# Рабочие сапоги
-	draw_rect(Rect2(-7.0 + ll, 9.0 + b, 6.0, 4.5), Color(0.20, 0.14, 0.09))
-	draw_rect(Rect2(1.0  + rl, 9.0 + b, 6.0, 4.5), Color(0.20, 0.14, 0.09))
-	# Комбинезон — штаны
-	draw_rect(Rect2(-6.0 + ll, 4.0 + b, 5.0, 7.0), ovr)
-	draw_rect(Rect2(1.0  + rl, 4.0 + b, 5.0, 7.0), ovr)
+	# Мотыга (за спиной, диагонально)
+	draw_line(Vector2(8.0, -15.0 + b), Vector2(-4.0, 14.0 + b), hoe_h, 2.0)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(5.0, -16.0 + b), Vector2(12.0, -17.0 + b),
+		Vector2(14.0, -13.0 + b), Vector2(7.0, -12.0 + b)]), hoe_m)
+	# Сапоги + ноги
+	draw_rect(Rect2(-9.0 + ll, 10.0 + b, 8.0, 5.0), fbot)
+	draw_rect(Rect2(1.0 + rl, 10.0 + b, 8.0, 5.0), fbot)
+	draw_rect(Rect2(-8.0 + ll, 5.0 + b, 6.0, 6.0), ovr)
+	draw_rect(Rect2(2.0 + rl, 5.0 + b, 6.0, 6.0), ovr)
 	# Рубашка
-	draw_rect(Rect2(-7.0, -5.0 + b, 14.0, 10.0), shirt)
-	# Комбинезон поверх (нагрудник + туловище)
-	draw_rect(Rect2(-7.0,  0.5 + b, 14.0, 5.0), ovr)
-	draw_rect(Rect2(-4.0, -5.0 + b,  8.0, 7.0), ovr)  # нагрудник
-	# Лямки комбинезона
-	draw_line(Vector2(-3.0, -5.0 + b), Vector2(-4.5, 0.5 + b), ovr.darkened(0.2), 2.0)
-	draw_line(Vector2( 3.0, -5.0 + b), Vector2( 4.5, 0.5 + b), ovr.darkened(0.2), 2.0)
-	# Шея
-	draw_rect(Rect2(-2.0, -6.0 + b, 4.0, 2.0), SKIN)
-	# Голова (округлая, добродушная)
-	draw_circle(Vector2(0.0, -9.5 + b), 5.5, SKIN)
-	# Светлые волосы
-	draw_rect(Rect2(-5.5, -15.0 + b, 11.0, 5.5), HAIR_LITE)
-	# Глаза
-	draw_rect(Rect2(-4.0, -11.0 + b, 3.0, 2.0), Color(0.28, 0.22, 0.10))
-	draw_rect(Rect2( 1.0, -11.0 + b, 3.0, 2.0), Color(0.28, 0.22, 0.10))
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-8.0, -5.0 + b), Vector2(-11.0, 10.0 + b),
+		Vector2(11.0, 10.0 + b), Vector2(8.0, -5.0 + b)]), shrt)
+	# Комбинезон (нижняя часть)
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(-8.0, 0.0 + b), Vector2(-10.0, 10.0 + b),
+		Vector2(10.0, 10.0 + b), Vector2(8.0, 0.0 + b)]), ovr)
+	# Нагрудник комбинезона
+	draw_rect(Rect2(-5.0, -5.0 + b, 10.0, 6.0), ovr)
+	# Лямки
+	draw_line(Vector2(-4.0, -5.0 + b), Vector2(-5.5, 0.0 + b), ovr.darkened(0.2), 2.0)
+	draw_line(Vector2(4.0, -5.0 + b), Vector2(5.5, 0.0 + b), ovr.darkened(0.2), 2.0)
+	# Нагрудный карман
+	draw_rect(Rect2(-3.0, -3.0 + b, 6.0, 4.0), ovr.darkened(0.12))
+	# Шея + голова
+	draw_rect(Rect2(-3.0, -5.0 + b, 6.0, 2.0), SKIN)
+	draw_circle(Vector2(0.0, -10.5 + b), 7.5, SKIN)
+	# Волосы
+	draw_rect(Rect2(-7.0, -18.0 + b, 14.0, 8.0), HAIR_LITE)
+	draw_rect(Rect2(-7.0, -17.0 + b, 5.0, 3.0), HAIR_LITE.darkened(0.1))
+	# Румяные щёки
+	draw_circle(Vector2(-4.0, -9.5 + b), 2.0, Color(0.82, 0.52, 0.42))
+	draw_circle(Vector2(4.0, -9.5 + b), 2.0, Color(0.82, 0.52, 0.42))
+	# Глаза с блеском
+	draw_circle(Vector2(-2.5, -11.5 + b), 1.5, HAIR_DARK)
+	draw_circle(Vector2(2.5, -11.5 + b), 1.5, HAIR_DARK)
+	draw_circle(Vector2(-2.5, -11.5 + b), 0.8, Color(0.86, 0.86, 0.86))
+	draw_circle(Vector2(2.5, -11.5 + b), 0.8, Color(0.86, 0.86, 0.86))
 	# Улыбка
-	draw_arc(Vector2(0.0, -8.5 + b), 2.5, 0.2, PI - 0.2, 8, Color(0.42, 0.25, 0.15), 1.5)
-	# Соломенная шляпа (поля + тулья)
-	draw_rect(Rect2(-10.0, -16.0 + b, 20.0, 3.0), hat)     # поля
-	draw_rect(Rect2( -5.5, -20.5 + b, 11.0, 6.0), hat_b)   # тулья
-	draw_line(Vector2(-10.0, -15.5 + b), Vector2(10.0, -15.5 + b), hat_b, 1.5)  # тень полей
-	# Мотыга
-	draw_line(Vector2(-9.0, -4.5 + b), Vector2(-9.0, 12.5 + b), hoe_h, 2.0)
-	draw_rect(Rect2(-14.0, -7.5 + b, 8.0, 3.0), hoe_m)
-	draw_rect(Rect2(-14.0, -7.5 + b, 2.0, 5.5), hoe_m)
+	draw_arc(Vector2(0.0, -8.5 + b), 3.0, 0.2, PI - 0.2, 8, SKIN.darkened(0.32), 1.5)
+	# Широкая соломенная шляпа
+	draw_rect(Rect2(-12.0, -19.0 + b, 24.0, 3.5), hat)
+	draw_rect(Rect2(-6.0, -24.0 + b, 12.0, 7.0), hat_b)
+	draw_line(Vector2(-12.0, -18.0 + b), Vector2(12.0, -18.0 + b), hat.darkened(0.2), 1.5)

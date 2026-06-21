@@ -20,6 +20,8 @@ enum IconType {
 	EXPEDITION,  # 13 компас
 	CRAFT,       # 14 ступка
 	DEMOLISH,    # 15 кувалда
+	MORALE,      # 16 костёр
+	SHIELD,      # 17 щит
 }
 
 @export var icon_type: IconType = IconType.FOOD
@@ -63,6 +65,8 @@ func _draw() -> void:
 		IconType.EXPEDITION:  _expedition(cx, cy, ir)
 		IconType.CRAFT:       _craft(cx, cy, ir)
 		IconType.DEMOLISH:    _demolish(cx, cy, ir)
+		IconType.MORALE:      _morale(cx, cy, ir)
+		IconType.SHIELD:      _shield(cx, cy, ir)
 
 # ─── Фон ───────────────────────────────────────────────────────────────────────
 
@@ -305,6 +309,42 @@ func _demolish(cx: float, cy: float, r: float) -> void:
 	# Крест — знак удаления
 	draw_line(Vector2(cx - r * 0.22, cy - r * 0.78), Vector2(cx + r * 0.12, cy - r * 0.42), C_BLOOD, 2.0)
 	draw_line(Vector2(cx - r * 0.22, cy - r * 0.42), Vector2(cx + r * 0.12, cy - r * 0.78), C_BLOOD, 2.0)
+
+func _morale(cx: float, cy: float, r: float) -> void:
+	# Костёр — поленья крест-накрест + языки пламени
+	draw_line(Vector2(cx - r * 0.62, cy + r * 0.72), Vector2(cx + r * 0.62, cy + r * 0.12), C_ACCENT, 3.0)
+	draw_line(Vector2(cx + r * 0.62, cy + r * 0.72), Vector2(cx - r * 0.62, cy + r * 0.12), C_ACCENT, 3.0)
+	var flame := PackedVector2Array([
+		Vector2(cx - r * 0.46, cy + r * 0.14),
+		Vector2(cx - r * 0.56, cy - r * 0.22),
+		Vector2(cx - r * 0.22, cy - r * 0.56),
+		Vector2(cx,            cy - r * 0.88),
+		Vector2(cx + r * 0.22, cy - r * 0.56),
+		Vector2(cx + r * 0.56, cy - r * 0.22),
+		Vector2(cx + r * 0.46, cy + r * 0.14),
+	])
+	draw_colored_polygon(flame, Color(0.95, 0.52, 0.08))
+	var inner := PackedVector2Array([
+		Vector2(cx - r * 0.24, cy + r * 0.10),
+		Vector2(cx - r * 0.14, cy - r * 0.42),
+		Vector2(cx,            cy - r * 0.66),
+		Vector2(cx + r * 0.14, cy - r * 0.42),
+		Vector2(cx + r * 0.24, cy + r * 0.10),
+	])
+	draw_colored_polygon(inner, Color(0.98, 0.86, 0.28))
+
+func _shield(cx: float, cy: float, r: float) -> void:
+	# Щит — пятиугольник с крестом
+	var pts := PackedVector2Array([
+		Vector2(cx - r * 0.70, cy - r * 0.74),
+		Vector2(cx + r * 0.70, cy - r * 0.74),
+		Vector2(cx + r * 0.70, cy + r * 0.08),
+		Vector2(cx,            cy + r * 0.84),
+		Vector2(cx - r * 0.70, cy + r * 0.08),
+	])
+	draw_colored_polygon(pts, C_ICON)
+	draw_line(Vector2(cx, cy - r * 0.62), Vector2(cx, cy + r * 0.56), C_STONE_MID, 1.5)
+	draw_line(Vector2(cx - r * 0.54, cy - r * 0.18), Vector2(cx + r * 0.54, cy - r * 0.18), C_STONE_MID, 1.5)
 
 # ─── Вспомогательный эллипс ────────────────────────────────────────────────────
 

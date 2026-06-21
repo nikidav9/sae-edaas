@@ -53,6 +53,7 @@ func _rebuild() -> void:
 func _add_card(recipe: CraftingRecipe) -> void:
 	var card := PanelContainer.new()
 	var vbox := VBoxContainer.new()
+	vbox.theme_override_constants_separation = 6
 	card.add_child(vbox)
 
 	var name_lbl := Label.new()
@@ -67,17 +68,49 @@ func _add_card(recipe: CraftingRecipe) -> void:
 		desc_lbl.add_theme_color_override("font_color", Color(0.75, 0.75, 0.75))
 		vbox.add_child(desc_lbl)
 
-	var cost_parts: PackedStringArray = []
+	# Стоимость: иконки ресурсов
+	var cost_row := HBoxContainer.new()
+	cost_row.theme_override_constants_separation = 6
+	vbox.add_child(cost_row)
+	var cost_prefix := Label.new()
+	cost_prefix.text = "Нужно:"
+	cost_prefix.add_theme_font_size_override("font_size", 13)
+	cost_prefix.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	cost_row.add_child(cost_prefix)
 	for k: String in recipe.input_resources:
-		cost_parts.append("%s ×%d" % [k, recipe.input_resources[k]])
-	var cost_lbl := Label.new()
-	cost_lbl.text = "Нужно: " + ", ".join(cost_parts)
-	vbox.add_child(cost_lbl)
+		var r_icon := GameIcon.new()
+		r_icon.icon_type = _res_icon_type(k)
+		r_icon.draw_background = false
+		r_icon.custom_minimum_size = Vector2(22, 22)
+		r_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		cost_row.add_child(r_icon)
+		var r_lbl := Label.new()
+		r_lbl.text = "×%d" % recipe.input_resources[k]
+		r_lbl.add_theme_font_size_override("font_size", 13)
+		r_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		cost_row.add_child(r_lbl)
 
+	# Результат: иконка + количество
+	var out_row := HBoxContainer.new()
+	out_row.theme_override_constants_separation = 6
+	vbox.add_child(out_row)
+	var arrow_lbl := Label.new()
+	arrow_lbl.text = "Итог:"
+	arrow_lbl.add_theme_font_size_override("font_size", 13)
+	arrow_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	out_row.add_child(arrow_lbl)
+	var out_icon := GameIcon.new()
+	out_icon.icon_type = _res_icon_type(recipe.output_resource)
+	out_icon.draw_background = false
+	out_icon.custom_minimum_size = Vector2(22, 22)
+	out_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	out_row.add_child(out_icon)
 	var out_lbl := Label.new()
-	out_lbl.text = "→ %s ×%d" % [recipe.output_resource, recipe.output_amount]
+	out_lbl.text = "×%d" % recipe.output_amount
+	out_lbl.add_theme_font_size_override("font_size", 13)
 	out_lbl.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
-	vbox.add_child(out_lbl)
+	out_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	out_row.add_child(out_lbl)
 
 	var can_afford := _can_afford(recipe)
 	var btn := Button.new()
@@ -87,6 +120,15 @@ func _add_card(recipe: CraftingRecipe) -> void:
 	vbox.add_child(btn)
 
 	items_container.add_child(card)
+
+func _res_icon_type(res_id: String) -> GameIcon.IconType:
+	match res_id:
+		"food":      return GameIcon.IconType.FOOD
+		"materials": return GameIcon.IconType.MATERIALS
+		"medicine":  return GameIcon.IconType.MEDICINE
+		"stone":     return GameIcon.IconType.STONE
+		"metal":     return GameIcon.IconType.METAL
+	return GameIcon.IconType.MATERIALS
 
 func _can_afford(recipe: CraftingRecipe) -> bool:
 	for k: String in recipe.input_resources:

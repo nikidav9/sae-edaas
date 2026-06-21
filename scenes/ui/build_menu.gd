@@ -62,13 +62,33 @@ func _rebuild_cards() -> void:
 	if _building_system == null:
 		return
 
+	# Кнопка «Снести» с иконкой
 	var demolish_btn := Button.new()
-	demolish_btn.custom_minimum_size = Vector2(140, 60)
-	demolish_btn.text = "Снести"
-	demolish_btn.add_theme_font_size_override("font_size", 14)
+	demolish_btn.custom_minimum_size = Vector2(148, 56)
+	demolish_btn.text = ""
 	if _demolish_mode:
-		demolish_btn.modulate = Color(1.0, 0.45, 0.45)
+		demolish_btn.modulate = Color(1.0, 0.42, 0.42)
 	demolish_btn.pressed.connect(_toggle_demolish_mode)
+	var d_hbox := HBoxContainer.new()
+	d_hbox.anchor_right = 1.0
+	d_hbox.anchor_bottom = 1.0
+	d_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	d_hbox.theme_override_constants_separation = 6
+	d_hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	demolish_btn.add_child(d_hbox)
+	var d_icon := GameIcon.new()
+	d_icon.icon_type = GameIcon.IconType.DEMOLISH
+	d_icon.draw_background = false
+	d_icon.custom_minimum_size = Vector2(28, 28)
+	d_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	d_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	d_hbox.add_child(d_icon)
+	var d_lbl := Label.new()
+	d_lbl.text = "Снести"
+	d_lbl.add_theme_font_size_override("font_size", 14)
+	d_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	d_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	d_hbox.add_child(d_lbl)
 	cards_container.add_child(demolish_btn)
 
 	for data in _building_system.get_catalogue():
@@ -80,29 +100,110 @@ func _toggle_demolish_mode() -> void:
 	_rebuild_cards()
 
 func _make_card(data: BuildingData) -> Control:
-	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(140, 110)
-	var cost_text := ""
-	for res_id in data.build_cost:
-		cost_text += "%s:%d " % [res_id, data.build_cost[res_id]]
-	var bonus := ""
-	if data.daily_food > 0:
-		bonus = "+%d еды/д" % data.daily_food
-	elif data.daily_morale > 0.0:
-		bonus = "+%.0f%% морали/д" % (data.daily_morale * 100.0)
-	elif data.defense_bonus > 0:
-		bonus = "защита +%d" % data.defense_bonus
-	btn.text = "%s\n%s\n%s%s" % [
-		data.display_name,
-		cost_text.strip_edges(),
-		("%dд. " % data.build_time_days) if data.build_time_days > 0 else "",
-		bonus,
-	]
-	btn.disabled = not data.can_afford()
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(148, 0)
 	if not data.can_afford():
-		btn.modulate = Color(0.6, 0.6, 0.6)
+		panel.modulate = Color(0.60, 0.60, 0.60)
+
+	var vbox := VBoxContainer.new()
+	vbox.theme_override_constants_separation = 5
+	panel.add_child(vbox)
+
+	# Название здания
+	var name_lbl := Label.new()
+	name_lbl.text = data.display_name
+	name_lbl.add_theme_font_size_override("font_size", 14)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+	vbox.add_child(name_lbl)
+
+	# Стоимость: иконка ресурса + количество
+	if not data.build_cost.is_empty():
+		var cost_row := HBoxContainer.new()
+		cost_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		cost_row.theme_override_constants_separation = 5
+		vbox.add_child(cost_row)
+		for res_id: String in data.build_cost:
+			var r_icon := GameIcon.new()
+			r_icon.icon_type = _res_icon_type(res_id)
+			r_icon.draw_background = false
+			r_icon.custom_minimum_size = Vector2(22, 22)
+			r_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			cost_row.add_child(r_icon)
+			var r_lbl := Label.new()
+			r_lbl.text = str(data.build_cost[res_id])
+			r_lbl.add_theme_font_size_override("font_size", 13)
+			r_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			cost_row.add_child(r_lbl)
+
+	# Время строительства: иконка молотка + дни
+	if data.build_time_days > 0:
+		var time_row := HBoxContainer.new()
+		time_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		time_row.theme_override_constants_separation = 4
+		vbox.add_child(time_row)
+		var t_icon := GameIcon.new()
+		t_icon.icon_type = GameIcon.IconType.BUILD
+		t_icon.draw_background = false
+		t_icon.custom_minimum_size = Vector2(18, 18)
+		t_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		time_row.add_child(t_icon)
+		var t_lbl := Label.new()
+		t_lbl.text = "%d д." % data.build_time_days
+		t_lbl.add_theme_font_size_override("font_size", 12)
+		t_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		time_row.add_child(t_lbl)
+
+	# Бонус: иконка + значение
+	var b_type := _bonus_icon_type(data)
+	var b_text := _bonus_text(data)
+	if b_type >= 0 and not b_text.is_empty():
+		var bonus_row := HBoxContainer.new()
+		bonus_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		bonus_row.theme_override_constants_separation = 4
+		vbox.add_child(bonus_row)
+		var b_icon := GameIcon.new()
+		b_icon.icon_type = b_type as GameIcon.IconType
+		b_icon.draw_background = false
+		b_icon.custom_minimum_size = Vector2(18, 18)
+		b_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		bonus_row.add_child(b_icon)
+		var b_lbl := Label.new()
+		b_lbl.text = b_text
+		b_lbl.add_theme_font_size_override("font_size", 12)
+		b_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		bonus_row.add_child(b_lbl)
+
+	# Кнопка «Построить»
+	var btn := Button.new()
+	btn.text = "Построить"
+	btn.add_theme_font_size_override("font_size", 13)
+	btn.disabled = not data.can_afford()
 	btn.pressed.connect(func() -> void: _select_building(data))
-	return btn
+	vbox.add_child(btn)
+
+	return panel
+
+func _res_icon_type(res_id: String) -> GameIcon.IconType:
+	match res_id:
+		"food":      return GameIcon.IconType.FOOD
+		"materials": return GameIcon.IconType.MATERIALS
+		"medicine":  return GameIcon.IconType.MEDICINE
+		"stone":     return GameIcon.IconType.STONE
+		"metal":     return GameIcon.IconType.METAL
+	return GameIcon.IconType.MATERIALS
+
+func _bonus_icon_type(data: BuildingData) -> int:
+	if data.daily_food > 0:     return GameIcon.IconType.FOOD
+	if data.daily_morale > 0.0: return GameIcon.IconType.MORALE
+	if data.defense_bonus > 0:  return GameIcon.IconType.SHIELD
+	return -1
+
+func _bonus_text(data: BuildingData) -> String:
+	if data.daily_food > 0:     return "+%d/д" % data.daily_food
+	if data.daily_morale > 0.0: return "+%.0f%%/д" % (data.daily_morale * 100.0)
+	if data.defense_bonus > 0:  return "+%d" % data.defense_bonus
+	return ""
 
 # --- Режим размещения ---
 

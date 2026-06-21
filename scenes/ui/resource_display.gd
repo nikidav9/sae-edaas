@@ -1,27 +1,27 @@
 extends HBoxContainer
 class_name ResourceDisplay
-## Переиспользуемый виджет одного ресурса: иконка + число.
+## Виджет одного ресурса: каменная иконка + число.
 ## Подписывается на EventBus.resource_changed и обновляется сам.
 
 @export var resource_id: String = "food"
-@export var icon_texture: Texture2D
-@export var label_prefix: String = ""
 
-@onready var prefix_label: Label = $PrefixLabel
-@onready var icon: TextureRect = $Icon
+@onready var game_icon: GameIcon = $GameIcon
 @onready var count_label: Label = $CountLabel
 
 func _ready() -> void:
-	if label_prefix != "":
-		prefix_label.text = label_prefix
-		prefix_label.show()
-		icon.hide()
-	else:
-		prefix_label.hide()
-		if icon_texture:
-			icon.texture = icon_texture
+	game_icon.icon_type = _get_icon_type()
+	game_icon.queue_redraw()
 	_refresh()
 	EventBus.resource_changed.connect(_on_resource_changed)
+
+func _get_icon_type() -> GameIcon.IconType:
+	match resource_id:
+		"food":      return GameIcon.IconType.FOOD
+		"materials": return GameIcon.IconType.MATERIALS
+		"medicine":  return GameIcon.IconType.MEDICINE
+		"stone":     return GameIcon.IconType.STONE
+		"metal":     return GameIcon.IconType.METAL
+	return GameIcon.IconType.FOOD
 
 func _refresh() -> void:
 	count_label.text = str(GameState.get_resource(resource_id))
@@ -32,7 +32,6 @@ func _on_resource_changed(id: String, amount: int) -> void:
 		_flash(amount)
 
 func _flash(amount: int) -> void:
-	# Зелёная вспышка при росте, красная при убывании.
 	var prev := int(count_label.text) if count_label.text.is_valid_int() else amount
 	var color := Color(0.4, 1.0, 0.4) if amount >= prev else Color(1.0, 0.3, 0.3)
 	var tween := create_tween()

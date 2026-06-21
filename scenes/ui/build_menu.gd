@@ -64,7 +64,7 @@ func _rebuild_cards() -> void:
 
 	var demolish_btn := Button.new()
 	demolish_btn.custom_minimum_size = Vector2(140, 60)
-	demolish_btn.text = "🔨 Снести"
+	demolish_btn.text = "Снести"
 	demolish_btn.add_theme_font_size_override("font_size", 14)
 	if _demolish_mode:
 		demolish_btn.modulate = Color(1.0, 0.45, 0.45)
@@ -87,15 +87,15 @@ func _make_card(data: BuildingData) -> Control:
 		cost_text += "%s:%d " % [res_id, data.build_cost[res_id]]
 	var bonus := ""
 	if data.daily_food > 0:
-		bonus = "🌽+%d/д" % data.daily_food
+		bonus = "+%d еды/д" % data.daily_food
 	elif data.daily_morale > 0.0:
-		bonus = "😊+%.0f%%/д" % (data.daily_morale * 100.0)
+		bonus = "+%.0f%% морали/д" % (data.daily_morale * 100.0)
 	elif data.defense_bonus > 0:
-		bonus = "🛡+%d" % data.defense_bonus
+		bonus = "защита +%d" % data.defense_bonus
 	btn.text = "%s\n%s\n%s%s" % [
 		data.display_name,
 		cost_text.strip_edges(),
-		("⏳%dд. " % data.build_time_days) if data.build_time_days > 0 else "",
+		("%dд. " % data.build_time_days) if data.build_time_days > 0 else "",
 		bonus,
 	]
 	btn.disabled = not data.can_afford()

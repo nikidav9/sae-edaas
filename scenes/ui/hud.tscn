@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/ui/resource_display.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/morale_bar.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/journal_panel.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/save_menu.tscn" id="5"]
+[ext_resource type="Script" path="res://scenes/ui/game_icon.gd" id="6"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1")
@@ -17,14 +18,16 @@ offset_bottom = 56.0
 
 [node name="HBox" type="HBoxContainer" parent="TopBar"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 
-[node name="PhaseIcon" type="Label" parent="TopBar/HBox" node_paths=PackedStringArray("PhaseIcon")]
+[node name="PhaseIcon" type="Control" parent="TopBar/HBox" node_paths=PackedStringArray("PhaseIcon")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "☀️"
-theme_override_font_sizes/font_size = 26
-vertical_alignment = 1
+custom_minimum_size = Vector2(40, 40)
+size_flags_vertical = 4
+script = ExtResource("6")
+draw_background = true
+icon_type = 7
 
 [node name="DayLabel" type="Label" parent="TopBar/HBox" node_paths=PackedStringArray("DayLabel")]
 unique_name_in_owner = true
@@ -48,36 +51,71 @@ script = ExtResource("3")
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(48, 48)
-text = "💾"
-theme_override_font_sizes/font_size = 22
+text = ""
+
+[node name="Icon" type="Control" parent="TopBar/HBox/SaveButton"]
+script = ExtResource("6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+draw_background = false
+icon_type = 10
 
 [node name="BuildButton" type="Button" parent="TopBar/HBox" node_paths=PackedStringArray("BuildButton")]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(48, 48)
-text = "🔨"
-theme_override_font_sizes/font_size = 22
+text = ""
+
+[node name="Icon" type="Control" parent="TopBar/HBox/BuildButton"]
+script = ExtResource("6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+draw_background = false
+icon_type = 11
 
 [node name="JournalButton" type="Button" parent="TopBar/HBox" node_paths=PackedStringArray("JournalButton")]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(48, 48)
-text = "📖"
-theme_override_font_sizes/font_size = 22
+text = ""
+
+[node name="Icon" type="Control" parent="TopBar/HBox/JournalButton"]
+script = ExtResource("6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+draw_background = false
+icon_type = 12
 
 [node name="ExpeditionButton" type="Button" parent="TopBar/HBox" node_paths=PackedStringArray("ExpeditionButton")]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(48, 48)
-text = "🗺"
-theme_override_font_sizes/font_size = 22
+text = ""
+
+[node name="Icon" type="Control" parent="TopBar/HBox/ExpeditionButton"]
+script = ExtResource("6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+draw_background = false
+icon_type = 13
 
 [node name="CraftButton" type="Button" parent="TopBar/HBox" node_paths=PackedStringArray("CraftButton")]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(48, 48)
-text = "⚗"
-theme_override_font_sizes/font_size = 22
+text = ""
+
+[node name="Icon" type="Control" parent="TopBar/HBox/CraftButton"]
+script = ExtResource("6")
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+draw_background = false
+icon_type = 14
 
 [node name="BottomBar" type="PanelContainer" parent="."]
 anchor_top = 1.0
@@ -92,12 +130,15 @@ theme_override_constants/separation = 0
 [node name="HealthDisplay" type="HBoxContainer" parent="BottomBar/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 4
 
-[node name="HeartIcon" type="Label" parent="BottomBar/HBox/HealthDisplay"]
+[node name="HeartIcon" type="Control" parent="BottomBar/HBox/HealthDisplay"]
 layout_mode = 2
-text = "❤"
-theme_override_font_sizes/font_size = 16
-vertical_alignment = 1
+custom_minimum_size = Vector2(26, 26)
+size_flags_vertical = 4
+script = ExtResource("6")
+draw_background = false
+icon_type = 5
 
 [node name="HealthLabel" type="Label" parent="BottomBar/HBox/HealthDisplay" node_paths=PackedStringArray("HealthLabel")]
 unique_name_in_owner = true
@@ -134,7 +175,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2")
 resource_id = "stone"
-label_prefix = "🪨"
 
 [node name="MetalDisplay" type="HBoxContainer" parent="BottomBar/HBox" node_paths=PackedStringArray("MetalDisplay")]
 unique_name_in_owner = true
@@ -142,7 +182,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 script = ExtResource("2")
 resource_id = "metal"
-label_prefix = "⚙"
 
 [node name="InteractionPrompt" type="Label" parent="." node_paths=PackedStringArray("InteractionPrompt")]
 unique_name_in_owner = true

@@ -110,7 +110,7 @@ func _finish_construction() -> void:
 		GameState.change_morale(0.05)
 
 func _update_progress_label() -> void:
-	progress_label.text = "🔨 %d д." % construction_days_left
+	progress_label.text = "%d д." % construction_days_left
 
 # --- Здоровье / урон ---
 

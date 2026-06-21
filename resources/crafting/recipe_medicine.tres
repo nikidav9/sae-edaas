@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="CraftingRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/crafting/crafting_recipe.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"recipe_medicine"
+display_name = "Аптечка"
+description = "Варим лекарство из запасов еды."
+input_resources = {"food": 4}
+output_resource = "medicine"
+output_amount = 1

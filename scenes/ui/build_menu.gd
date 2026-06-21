@@ -1,14 +1,6 @@
 extends CanvasLayer
 class_name BuildMenu
-## Меню строительства: карточки зданий + режим размещения с призраком.
-##
-## Поток:
-##   1. Игрок нажимает кнопку Build в HUD → EventBus.build_mode_entered
-##   2. BuildMenu показывает панель с карточками каталога.
-##   3. Игрок тапает карточку → входит в режим размещения (placement mode).
-##   4. Призрак следует за пальцем, зелёный = можно, красный = нельзя.
-##   5. Игрок тапает позицию → EventBus.build_requested → меню скрывается.
-##   6. Крестик или повторный тап без места → выход из режима.
+## Меню строительства: карточки зданий + режим размещения с призраком + режим сноса.
 
 const GHOST_ALPHA := 0.5
 
@@ -21,6 +13,7 @@ var _building_system: BuildingSystem
 var _grid: BaseGrid
 var _selected: BuildingData = null
 var _placement_mode: bool = false
+var _demolish_mode: bool = false
 
 func _ready() -> void:
 	hide()
@@ -48,12 +41,14 @@ func _on_build_mode_entered() -> void:
 	_rebuild_cards()
 	show()
 	_exit_placement()
+	_demolish_mode = false
 	var tween := create_tween()
 	panel.position.y = 400
 	tween.tween_property(panel, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 func _on_build_mode_exited() -> void:
 	_exit_placement()
+	_demolish_mode = false
 	hide()
 
 func _on_close_pressed() -> void:
@@ -66,19 +61,42 @@ func _rebuild_cards() -> void:
 		c.queue_free()
 	if _building_system == null:
 		return
+
+	var demolish_btn := Button.new()
+	demolish_btn.custom_minimum_size = Vector2(140, 60)
+	demolish_btn.text = "🔨 Снести"
+	demolish_btn.add_theme_font_size_override("font_size", 14)
+	if _demolish_mode:
+		demolish_btn.modulate = Color(1.0, 0.45, 0.45)
+	demolish_btn.pressed.connect(_toggle_demolish_mode)
+	cards_container.add_child(demolish_btn)
+
 	for data in _building_system.get_catalogue():
 		cards_container.add_child(_make_card(data))
+
+func _toggle_demolish_mode() -> void:
+	_demolish_mode = not _demolish_mode
+	_exit_placement()
+	_rebuild_cards()
 
 func _make_card(data: BuildingData) -> Control:
 	var btn := Button.new()
 	btn.custom_minimum_size = Vector2(140, 110)
 	var cost_text := ""
 	for res_id in data.build_cost:
-		cost_text += "%s: %d  " % [res_id, data.build_cost[res_id]]
-	btn.text = "%s\n%s\n%s" % [
+		cost_text += "%s:%d " % [res_id, data.build_cost[res_id]]
+	var bonus := ""
+	if data.daily_food > 0:
+		bonus = "🌽+%d/д" % data.daily_food
+	elif data.daily_morale > 0.0:
+		bonus = "😊+%.0f%%/д" % (data.daily_morale * 100.0)
+	elif data.defense_bonus > 0:
+		bonus = "🛡+%d" % data.defense_bonus
+	btn.text = "%s\n%s\n%s%s" % [
 		data.display_name,
 		cost_text.strip_edges(),
-		("⏳ %d д." % data.build_time_days) if data.build_time_days > 0 else "Мгновенно"
+		("⏳%dд. " % data.build_time_days) if data.build_time_days > 0 else "",
+		bonus,
 	]
 	btn.disabled = not data.can_afford()
 	if not data.can_afford():
@@ -89,9 +107,9 @@ func _make_card(data: BuildingData) -> Control:
 # --- Режим размещения ---
 
 func _select_building(data: BuildingData) -> void:
+	_demolish_mode = false
 	_selected = data
 	_placement_mode = true
-	# Настраиваем призрак под размер здания.
 	ghost.size = Vector2(data.size_cells) * BaseGrid.CELL_SIZE
 	ghost.color = Color(0.3, 1.0, 0.3, GHOST_ALPHA)
 	ghost.show()
@@ -102,18 +120,29 @@ func _exit_placement() -> void:
 	ghost.hide()
 
 func _input(event: InputEvent) -> void:
-	if not _placement_mode or _selected == null or _grid == null:
+	if not visible:
 		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
-		if touch.pressed:
-			var world_pos := _screen_to_world(touch.position)
-			var cell := _grid.world_to_cell(world_pos)
+		if not touch.pressed:
+			return
+		var world_pos := _screen_to_world(touch.position)
+		var cell := _grid.world_to_cell(world_pos) if _grid != null else Vector2i.ZERO
+
+		if _demolish_mode and _grid != null and _building_system != null:
+			_building_system.demolish(cell)
+			_rebuild_cards()
+			return
+
+		if _placement_mode and _selected != null and _grid != null:
 			if _grid.can_place(_selected, cell):
 				EventBus.build_requested.emit(_selected, cell)
 				_exit_placement()
 				EventBus.build_mode_exited.emit()
+
 	elif event is InputEventScreenDrag:
+		if not _placement_mode or _grid == null:
+			return
 		var world_pos := _screen_to_world(event.position)
 		var cell := _grid.world_to_cell(world_pos)
 		var snapped := _grid.cell_to_world(cell)
@@ -122,7 +151,6 @@ func _input(event: InputEvent) -> void:
 		ghost.color = Color(0.3, 1.0, 0.3, GHOST_ALPHA) if can else Color(1.0, 0.2, 0.2, GHOST_ALPHA)
 
 func _screen_to_world(screen_pos: Vector2) -> Vector2:
-	# Приближение: ищем Camera2D в сцене.
 	var cam := get_viewport().get_camera_2d()
 	if cam:
 		return screen_pos + cam.global_position - get_viewport().get_visible_rect().size * 0.5

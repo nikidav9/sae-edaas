@@ -38,7 +38,7 @@ func _apply_type() -> void:
 			visual.color = Color(0.18, 0.52, 0.14)
 			label.text = "🌲"
 		NodeType.ROCK:
-			resource_id = "materials"
+			resource_id = "stone"
 			amount = 3
 			gather_time = 3.0
 			respawn_days = 5

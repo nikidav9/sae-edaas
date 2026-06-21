@@ -2,9 +2,8 @@ extends StaticBody2D
 class_name Building
 ## Размещённое здание в лагере.
 ##
-## Состояния: строится (scaffold_node видим) → готово (building_node видим).
-## При завершении строительства спавнит WorkPoint если нужен.
-## Механик (mechanic_traps) сокращает build_time_days в 2×.
+## Строится за N дней. После постройки — ежедневные эффекты (еда, мораль).
+## Зомби могут атаковать и уничтожить здание.
 
 signal construction_completed(building: Building)
 signal destroyed(building: Building)
@@ -29,9 +28,7 @@ func _ready() -> void:
 	health_bar.max_value = building_data.max_health
 	health_bar.value = current_health
 
-	# Мгновенная постройка (баррикады, костёр).
 	var build_days := building_data.build_time_days
-	# Механик в ростере → вдвое быстрее.
 	if GameState.has_ability("mechanic_traps"):
 		build_days = ceili(build_days / 2.0)
 
@@ -42,7 +39,6 @@ func _ready() -> void:
 		_start_construction()
 		EventBus.day_passed.connect(_on_day_passed)
 
-	# WorkPoint: настраиваем ability_id из BuildingData.
 	if work_point_node and not building_data.provides_work_for_ability.is_empty():
 		work_point_node.required_ability_id = building_data.provides_work_for_ability
 		work_point_node.add_to_group("work_points")
@@ -61,13 +57,23 @@ func _start_construction() -> void:
 		add_child(_scaffold_instance)
 
 func _on_day_passed(_day: int) -> void:
-	if is_built:
+	if not is_built:
+		construction_days_left -= 1
+		_update_progress_label()
+		if construction_days_left <= 0:
+			EventBus.day_passed.disconnect(_on_day_passed)
+			_finish_construction()
+			EventBus.day_passed.connect(_on_day_passed)
 		return
-	construction_days_left -= 1
-	_update_progress_label()
-	if construction_days_left <= 0:
-		EventBus.day_passed.disconnect(_on_day_passed)
-		_finish_construction()
+
+	# Ежедневные эффекты готового здания.
+	if building_data.daily_food > 0:
+		GameState.change_resource("food", building_data.daily_food)
+	if building_data.daily_morale > 0.0:
+		GameState.change_morale(building_data.daily_morale)
+	# Костёр без daily_morale поля — оставляем старую логику.
+	if building_data.id == &"campfire":
+		GameState.change_morale(0.01)
 
 func _finish_construction() -> void:
 	is_built = true
@@ -79,7 +85,6 @@ func _finish_construction() -> void:
 		add_child(_building_instance)
 	construction_completed.emit(self)
 	EventBus.building_construction_completed.emit(building_data.id, Vector2i.ZERO)
-	# Костёр → бонус морали при постройке.
 	if building_data.id == &"campfire":
 		GameState.change_morale(0.05)
 
@@ -95,9 +100,17 @@ func take_damage(amount: int) -> void:
 		_destroy()
 
 func _on_base_attacked(attacker_count: int) -> void:
-	# Баррикады принимают урон первыми при атаке.
-	if building_data and building_data.id == &"barricade":
-		take_damage(attacker_count * 10)
+	if not is_built:
+		return
+	if building_data == null:
+		return
+	match building_data.id:
+		&"barricade", &"wall_wood", &"wall_stone":
+			take_damage(attacker_count * 10)
+		&"farm_plot":
+			# Зомби вытаптывают огород — теряем накопленную еду.
+			if building_data.daily_food > 0:
+				GameState.change_resource("food", -building_data.daily_food)
 
 func _destroy() -> void:
 	destroyed.emit(self)

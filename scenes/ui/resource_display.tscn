@@ -6,6 +6,12 @@
 script = ExtResource("1")
 theme_override_constants/separation = 6
 
+[node name="PrefixLabel" type="Label" parent="."]
+layout_mode = 2
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 18
+visible = false
+
 [node name="Icon" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(28, 28)
 layout_mode = 2

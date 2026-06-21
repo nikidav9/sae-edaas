@@ -142,7 +142,35 @@ func _find_in_catalogue(id: StringName) -> BuildingData:
 
 # --- Запросы извне ---
 
+## Снос здания. Возвращает 50% потраченных ресурсов.
+func demolish(cell: Vector2i) -> void:
+	if not _placed.has(cell):
+		return
+	var b := _placed[cell] as Building
+	if b == null:
+		return
+	var data := b.building_data
+	if data:
+		for res_id in data.build_cost:
+			var refund := int(data.build_cost[res_id]) / 2
+			if refund > 0:
+				GameState.change_resource(res_id, refund)
+		total_defense_bonus -= data.defense_bonus
+	grid.release(cell, data)
+	_placed.erase(cell)
+	b.queue_free()
+	if data:
+		EventBus.building_destroyed.emit(data.id, cell)
+
 func get_catalogue() -> Array[BuildingData]:
+	# Фильтруем по разблокировкам.
+	var result: Array[BuildingData] = []
+	for b in catalogue:
+		if b.requires_building.is_empty() or has_building(b.requires_building):
+			result.append(b)
+	return result
+
+func get_full_catalogue() -> Array[BuildingData]:
 	return catalogue
 
 func has_building(building_id: StringName) -> bool:

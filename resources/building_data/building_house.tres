@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"house"
+display_name = "Жилой дом"
+description = "Улучшает жизнь поселенцев. +2% морали каждый день."
+size_cells = Vector2i(2, 2)
+build_cost = {"materials": 15, "stone": 8}
+build_time_days = 3
+max_health = 200
+defense_bonus = 0
+daily_morale = 0.02

@@ -12,6 +12,7 @@ build_cost = {"materials": 4}
 build_time_days = 2
 max_health = 40
 defense_bonus = 0
+daily_food = 2
 provides_work_for_ability = &"farmer_food"
 building_scene = "res://scenes/base/buildings/farm_plot.tscn"
 scaffold_scene = "res://scenes/base/buildings/scaffold.tscn"

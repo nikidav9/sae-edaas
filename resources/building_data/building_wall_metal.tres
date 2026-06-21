@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"wall_metal"
+display_name = "Металлическая стена"
+description = "Почти неразрушимая. Конечная стадия укрепления периметра."
+size_cells = Vector2i(1, 1)
+build_cost = {"metal": 8, "stone": 3}
+build_time_days = 1
+max_health = 800
+defense_bonus = 20
+requires_building = &"forge"

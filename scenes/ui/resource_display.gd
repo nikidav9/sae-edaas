@@ -5,13 +5,21 @@ class_name ResourceDisplay
 
 @export var resource_id: String = "food"
 @export var icon_texture: Texture2D
+@export var label_prefix: String = ""
 
+@onready var prefix_label: Label = $PrefixLabel
 @onready var icon: TextureRect = $Icon
 @onready var count_label: Label = $CountLabel
 
 func _ready() -> void:
-	if icon_texture:
-		icon.texture = icon_texture
+	if label_prefix != "":
+		prefix_label.text = label_prefix
+		prefix_label.show()
+		icon.hide()
+	else:
+		prefix_label.hide()
+		if icon_texture:
+			icon.texture = icon_texture
 	_refresh()
 	EventBus.resource_changed.connect(_on_resource_changed)
 

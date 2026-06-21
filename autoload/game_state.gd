@@ -20,6 +20,8 @@ var raider_reputation: float = 0.0
 var resources: Dictionary = {
 	"food": 20,
 	"materials": 15,
+	"stone": 0,
+	"metal": 0,
 	"medicine": 5,
 }
 
@@ -117,7 +119,7 @@ func reset() -> void:
 	is_night = false
 	group_morale = 0.7
 	raider_reputation = 0.0
-	resources = {"food": 20, "materials": 15, "medicine": 5}
+	resources = {"food": 20, "materials": 15, "stone": 0, "metal": 0, "medicine": 5}
 	roster_ability_ids.clear()
 	visitor_journal.clear()
 	active_expeditions.clear()

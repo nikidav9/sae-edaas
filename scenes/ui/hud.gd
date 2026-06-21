@@ -18,6 +18,9 @@ const PHASE_ICONS: Array[String] = ["🌅", "☀️", "🌇", "🌙"]
 @onready var save_button: Button = %SaveButton
 @onready var save_menu: SaveMenu = %SaveMenu
 @onready var expedition_button: Button = %ExpeditionButton
+@onready var craft_button: Button = %CraftButton
+@onready var stone_display: ResourceDisplay = %StoneDisplay
+@onready var metal_display: ResourceDisplay = %MetalDisplay
 @onready var health_label: Label = %HealthLabel
 @onready var interaction_prompt: Label = %InteractionPrompt
 
@@ -27,6 +30,7 @@ func _ready() -> void:
 	build_button.pressed.connect(_on_build_button_pressed)
 	save_button.pressed.connect(_on_save_button_pressed)
 	expedition_button.pressed.connect(_on_expedition_button_pressed)
+	craft_button.pressed.connect(_on_craft_button_pressed)
 	# Игровые события.
 	EventBus.day_passed.connect(_on_day_passed)
 	EventBus.day_phase_changed.connect(_on_phase_changed)
@@ -66,6 +70,11 @@ func _on_save_button_pressed() -> void:
 
 func _on_expedition_button_pressed() -> void:
 	var panel := get_tree().get_first_node_in_group("expedition_panel") as ExpeditionPanel
+	if panel:
+		panel.toggle()
+
+func _on_craft_button_pressed() -> void:
+	var panel := get_tree().get_first_node_in_group("crafting_panel") as CraftingPanel
 	if panel:
 		panel.toggle()
 

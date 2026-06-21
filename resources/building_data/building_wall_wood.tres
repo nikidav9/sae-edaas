@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"wall_wood"
+display_name = "Деревянная стена"
+description = "Базовая защита периметра. Блокирует зомби. Горит."
+size_cells = Vector2i(1, 1)
+build_cost = {"materials": 3}
+build_time_days = 0
+max_health = 80
+defense_bonus = 2

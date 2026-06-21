@@ -25,6 +25,7 @@ var base_grid: BaseGrid
 @onready var player: PlayerController = $PlayerController
 @onready var joystick: VirtualJoystick = $GameUI/VirtualJoystick
 @onready var expedition_panel: ExpeditionPanel = $ExpeditionPanel
+@onready var crafting_panel_node: CraftingPanel = $CraftingPanel
 
 func _ready() -> void:
 	# --- Базовые системы ---
@@ -115,6 +116,10 @@ func _ready() -> void:
 	# --- Экспедиции ---
 	if expedition_panel:
 		expedition_panel.setup(expedition_system)
+
+	# --- Крафт ---
+	if crafting_panel_node:
+		crafting_panel_node.setup(building_system)
 
 	# --- Ресурсные узлы на карте ---
 	_spawn_resources()

@@ -12,6 +12,8 @@ extends Node
 # --- Время / цикл дня ---
 signal day_passed(day: int)
 signal night_started(day: int)
+## phase: DayNightSystem.Phase (int), progress: float [0..1] внутри фазы.
+signal day_phase_changed(phase: int, progress: float)
 
 # --- Визитёры ---
 signal visitor_arrived(visitor: VisitorData)

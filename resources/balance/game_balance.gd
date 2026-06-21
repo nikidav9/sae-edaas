@@ -33,6 +33,20 @@ class_name GameBalance
 ## За сколько дней разведчик видит приближение орды заранее.
 @export var scout_horde_warning_days: int = 2
 
+@export_group("День / Ночь")
+## Длительность одного игрового дня в реальных секундах.
+@export var day_duration_seconds: float = 240.0
+## Доля дня, приходящаяся на каждую фазу (сумма = 1.0).
+## [dawn, day, dusk, night]
+@export var phase_fractions: Array[float] = [0.1, 0.45, 0.1, 0.35]
+## Цвета CanvasModulate для каждой фазы: dawn / day / dusk / night.
+@export var phase_colors: Array[Color] = [
+	Color(0.65, 0.55, 0.70),  # рассвет  — лиловый
+	Color(1.00, 0.98, 0.95),  # день     — почти белый, чуть тёплый
+	Color(0.85, 0.55, 0.30),  # закат    — оранжевый
+	Color(0.13, 0.16, 0.28),  # ночь     — глубокий синий
+]
+
 @export_group("Оптимизация (mobile)")
 ## Жёсткий лимит активных зомби на экране (object pooling).
 @export var max_active_zombies: int = 40

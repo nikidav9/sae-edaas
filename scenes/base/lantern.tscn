@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/base/lantern.gd" id="1"]
+
+[node name="Lantern" type="Node2D"]
+script = ExtResource("1")
+light_color = Color(1, 0.75, 0.3, 1)
+light_energy_day = 0.0
+light_energy_night = 1.2
+flicker_speed = 3.5
+flicker_amplitude = 0.15
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(1, 0.75, 0.3, 1)
+energy = 0.0
+texture_scale = 2.5
+shadow_enabled = true
+shadow_filter = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 1

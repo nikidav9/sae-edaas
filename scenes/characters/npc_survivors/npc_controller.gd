@@ -8,14 +8,12 @@ class_name NPCController
 
 @export var npc_data: NPCData
 
-@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var npc_visual: NPCVisual = $NPCVisual
 @onready var name_label: Label = $NameLabel
 @onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
 @onready var state_machine: StateMachine = $StateMachine
 
-## Текущая рабочая точка (назначается NPCManager).
 var _work_point: Node2D = null
-## Текущая лояльность (0..1). При достижении 0 → NPC уходит.
 var current_loyalty: float = 0.6
 
 const MOVE_SPEED: float = 80.0
@@ -29,7 +27,7 @@ func _ready() -> void:
 func _apply_data() -> void:
 	name_label.text = npc_data.display_name
 	current_loyalty = npc_data.base_loyalty
-	# Разведчик патрулирует дальше — передаём это в PatrolState через размер радиуса.
+	npc_visual.setup(npc_data)
 	if npc_data.ability_id == &"scout_recon":
 		var patrol_state := state_machine.find_child("Patrol") as NPCPatrolState
 		if patrol_state:
@@ -43,6 +41,7 @@ func _physics_process(_delta: float) -> void:
 		var direction := (target - global_position).normalized()
 		velocity = direction * MOVE_SPEED
 		set_facing(sign(direction.x) as int)
+	npc_visual.set_moving(velocity.length_squared() > 4.0)
 	move_and_slide()
 
 # --- API для State Machine ---
@@ -63,20 +62,14 @@ func assign_work_point(point: Node2D) -> void:
 	_work_point = point
 
 func play_animation(anim_name: String) -> void:
-	if sprite.sprite_frames and sprite.sprite_frames.has_animation(anim_name):
-		sprite.play(anim_name)
-	else:
-		# Заглушка: если анимации ещё нет — играем "idle" или ничего.
-		if sprite.sprite_frames and sprite.sprite_frames.has_animation("idle"):
-			sprite.play("idle")
+	npc_visual.set_moving(anim_name == "walk")
 
 func set_facing(direction: int) -> void:
-	sprite.flip_h = direction < 0
+	npc_visual.set_facing(direction)
 
 # --- Лояльность ---
 
 func _on_morale_changed(new_morale: float, _delta: float) -> void:
-	# Низкая мораль группы постепенно тянет лояльность NPC вниз.
 	if new_morale < 0.3:
 		_change_loyalty(-0.02)
 
@@ -88,10 +81,8 @@ func _check_food_upkeep() -> void:
 		return
 	if GameState.can_afford("food", npc_data.food_upkeep):
 		GameState.change_resource("food", -npc_data.food_upkeep)
-		# Сыт → небольшой прирост лояльности.
 		_change_loyalty(0.01)
 	else:
-		# Голодает → резкое падение лояльности.
 		_change_loyalty(-0.1)
 
 func _change_loyalty(delta: float) -> void:

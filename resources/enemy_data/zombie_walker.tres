@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"zombie_walker"
+display_name = "Ходячий"
+family = 0
+max_health = 30
+move_speed = 40.0
+attack_damage = 8
+attack_cooldown = 1.5
+hearing_radius = 200.0
+noise_attraction = 1.0
+smell_radius = 150.0
+light_attraction_range = 250.0
+supports_multimesh = true

@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/virtual_joystick.gd" id="1"]
+
+[node name="VirtualJoystick" type="Control"]
+script = ExtResource("1")
+anchor_right = 0.5
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="BaseCircle" type="ColorRect" parent="." node_paths=PackedStringArray("BaseCircle")]
+unique_name_in_owner = true
+color = Color(1, 1, 1, 0.1)
+size = Vector2(140, 140)
+visible = false
+mouse_filter = 2
+
+[node name="StickCircle" type="ColorRect" parent="." node_paths=PackedStringArray("StickCircle")]
+unique_name_in_owner = true
+color = Color(1, 1, 1, 0.28)
+size = Vector2(64, 64)
+visible = false
+mouse_filter = 2

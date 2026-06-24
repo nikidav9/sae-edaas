@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"watchtower"
+display_name = "Сторожевая вышка"
+description = "Открывает позицию для снайпера. Только отсюда возможна дальняя атака."
+size_cells = Vector2i(2, 2)
+build_cost = {"materials": 12}
+build_time_days = 2
+max_health = 150
+defense_bonus = 5
+provides_work_for_ability = &"tower_sniper"
+building_scene = "res://scenes/base/buildings/watchtower.tscn"
+scaffold_scene = "res://scenes/base/buildings/scaffold.tscn"

@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/crafting_panel.gd" id="1"]
+
+[node name="CraftingPanel" type="CanvasLayer"]
+script = ExtResource("1")
+layer = 20
+
+[node name="Backdrop" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.65)
+mouse_filter = 0
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchor_left = 0.1
+anchor_top = 0.05
+anchor_right = 0.9
+anchor_bottom = 0.95
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Крафт"
+theme_override_font_sizes/font_size = 22
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/VBox/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(44, 44)
+text = "✕"
+theme_override_font_sizes/font_size = 20
+
+[node name="Divider" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 350)
+
+[node name="ItemsContainer" type="VBoxContainer" parent="Panel/VBox/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10

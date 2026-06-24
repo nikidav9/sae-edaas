@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/resource_display.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/ui/game_icon.gd" id="2"]
+
+[node name="ResourceDisplay" type="HBoxContainer"]
+script = ExtResource("1")
+theme_override_constants/separation = 6
+
+[node name="GameIcon" type="Control" parent="."]
+script = ExtResource("2")
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_vertical = 4
+draw_background = true
+
+[node name="CountLabel" type="Label" parent="."]
+layout_mode = 2
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 20

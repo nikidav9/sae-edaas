@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BiomeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/biome_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"swamp"
+display_name = "Болото"
+description = "Топи и туман. Очень медленное передвижение, зато много лечебных трав."
+noise_threshold = 0.72
+ground_tile_id = 3
+detail_tile_id = 12
+detail_chance = 0.5
+movement_modifier = 0.5
+horde_spawn_chance = 0.06
+revealed_by_default = false

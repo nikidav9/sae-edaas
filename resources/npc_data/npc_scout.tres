@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"scout"
+display_name = "Разведчик"
+description = "Видит блуждающие орды на карте заранее. Слабый в бою, но незаменим для планирования."
+ability_id = &"scout_recon"
+ability_role = 0
+ability_description = "Показывает позиции орд на карте за 2 дня до подхода. Единственный источник раннего предупреждения."
+food_upkeep = 1
+requires_structure_id = &""
+max_health = 70
+attack_damage = 8
+attack_range = 64.0
+base_loyalty = 0.70

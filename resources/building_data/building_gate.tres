@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/building_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"gate"
+display_name = "Деревянные ворота"
+description = "Проход в стене. Жители могут пройти, зомби — нет."
+size_cells = Vector2i(2, 1)
+build_cost = {"materials": 8}
+build_time_days = 0
+max_health = 120
+defense_bonus = 3

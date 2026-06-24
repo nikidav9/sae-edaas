@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BiomeData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/biome_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"wasteland"
+display_name = "Пустошь"
+description = "Выжженная земля. Редкий лут высокого качества, постоянная угроза мутантов."
+noise_threshold = 0.88
+ground_tile_id = 4
+detail_tile_id = 13
+detail_chance = 0.2
+movement_modifier = 1.0
+horde_spawn_chance = 0.12
+revealed_by_default = false

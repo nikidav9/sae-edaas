@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="DialogueTree" load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_tree.gd" id="tree"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_node.gd" id="node_s"]
+[ext_resource type="Script" path="res://resources/dialogue/dialogue_option.gd" id="opt_s"]
+
+[sub_resource type="Resource" id="opt_help"]
+script = ExtResource("opt_s")
+label = "Заходи, дадим поесть и место для сна."
+next_node_id = ""
+action = "admit"
+requires_ability = &""
+morale_delta = 0.05
+raider_reputation_delta = 0.0
+resource_cost = {"food": 2}
+
+[sub_resource type="Resource" id="opt_check"]
+script = ExtResource("opt_s")
+label = "[Медик] Дай осмотрю тебя сначала."
+next_node_id = "medic_check"
+action = ""
+requires_ability = &"medic_heal"
+morale_delta = 0.0
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="opt_dismiss"]
+script = ExtResource("opt_s")
+label = "Проваливай. Мы не принимаем чужаков."
+next_node_id = ""
+action = "dismiss"
+requires_ability = &""
+morale_delta = -0.03
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="opt_admit_anyway"]
+script = ExtResource("opt_s")
+label = "Всё равно пусти его. Он выглядит здоровым."
+next_node_id = ""
+action = "admit"
+requires_ability = &""
+morale_delta = 0.03
+raider_reputation_delta = 0.0
+resource_cost = {"food": 2}
+
+[sub_resource type="Resource" id="opt_reject_safe"]
+script = ExtResource("opt_s")
+label = "Извини. Не могу рисковать группой."
+next_node_id = ""
+action = "reject"
+requires_ability = &""
+morale_delta = 0.0
+raider_reputation_delta = 0.0
+resource_cost = {}
+
+[sub_resource type="Resource" id="node_start"]
+script = ExtResource("node_s")
+id = "start"
+speaker = ""
+text = "Пожалуйста... я несколько дней шёл. Просто нужно поесть и поспать. Я не опасен, обещаю. [color=gray]Он щурится и прячет правую руку за спину.[/color]"
+options = [SubResource("opt_help"), SubResource("opt_check"), SubResource("opt_dismiss")]
+auto_next_id = ""
+auto_next_delay = 2.0
+timeout_option_index = -1
+
+[sub_resource type="Resource" id="node_medic_check"]
+script = ExtResource("node_s")
+id = "medic_check"
+speaker = "Медик"
+text = "[color=red]Укус. Свежий, не больше двух дней. Он заражён — просто ещё не знает или скрывает.[/color] Что делаем?"
+options = [SubResource("opt_admit_anyway"), SubResource("opt_reject_safe")]
+auto_next_id = ""
+auto_next_delay = 2.0
+timeout_option_index = -1
+
+[resource]
+script = ExtResource("tree")
+nodes = [SubResource("node_start"), SubResource("node_medic_check")]
+entry_node_id = "start"

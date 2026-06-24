@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/world/day_night_environment.gd" id="1"]
+
+[node name="DayNightEnvironment" type="Node2D"]
+script = ExtResource("1")
+transition_duration = 6.0
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(1, 0.98, 0.95, 1)
+
+[node name="SunLight" type="DirectionalLight2D" parent="."]
+energy = 1.0
+color = Color(1, 0.98, 0.92, 1)
+shadow_enabled = true

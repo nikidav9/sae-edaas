@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/journal_panel.gd" id="1"]
+
+[node name="JournalPanel" type="CanvasLayer"]
+script = ExtResource("1")
+layer = 15
+
+[node name="Backdrop" type="ColorRect" parent="."]
+color = Color(0, 0, 0, 0.55)
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 0
+
+[node name="Panel" type="PanelContainer" parent="." node_paths=PackedStringArray("Panel")]
+unique_name_in_owner = true
+anchor_left = 0.0
+anchor_top = 0.15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+
+[node name="TitleBar" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Panel/VBox/TitleBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Дневник"
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/VBox/TitleBar"]
+layout_mode = 2
+text = "✕"
+theme_override_font_sizes/font_size = 20
+
+[node name="HSep" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBox" node_paths=PackedStringArray("ScrollContainer")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EntriesContainer" type="VBoxContainer" parent="Panel/VBox/ScrollContainer" node_paths=PackedStringArray("EntriesContainer")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="EmptyLabel" type="Label" parent="Panel/VBox/ScrollContainer/EntriesContainer" node_paths=PackedStringArray("EmptyLabel")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Ещё никто не приходил."
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+modulate = Color(0.6, 0.6, 0.6, 1)

@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/main_menu.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/ui/main_menu_art.gd" id="2"]
+
+[node name="MainMenu" type="Control"]
+script = ExtResource("1")
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ArtCanvas" type="Node2D" parent="."]
+script = ExtResource("2")
+
+[node name="TitleVBox" type="VBoxContainer" parent="."]
+anchor_left = 0.15
+anchor_top = 0.06
+anchor_right = 0.85
+anchor_bottom = 0.48
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="TitleVBox" node_paths=PackedStringArray("TitleLabel")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "HOLLOW REACH"
+theme_override_font_sizes/font_size = 72
+horizontal_alignment = 1
+modulate = Color(0.96, 0.1, 0.07, 1)
+
+[node name="SubtitleLabel" type="Label" parent="TitleVBox" node_paths=PackedStringArray("SubtitleLabel")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Выживи.   Удержи лагерь.   Не доверяй никому."
+theme_override_font_sizes/font_size = 17
+horizontal_alignment = 1
+modulate = Color(0.58, 0.58, 0.58, 1)
+
+[node name="ButtonVBox" type="VBoxContainer" parent="."]
+anchor_left = 0.3
+anchor_top = 0.54
+anchor_right = 0.7
+anchor_bottom = 0.9
+theme_override_constants/separation = 16
+
+[node name="NewGameButton" type="Button" parent="ButtonVBox" node_paths=PackedStringArray("NewGameButton")]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 70)
+text = "▶  НОВАЯ ИГРА"
+theme_override_font_sizes/font_size = 22
+
+[node name="ContinueButton" type="Button" parent="ButtonVBox" node_paths=PackedStringArray("ContinueButton")]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 70)
+text = "⟳  ПРОДОЛЖИТЬ"
+theme_override_font_sizes/font_size = 22
+
+[node name="VersionLabel" type="Label" parent="." node_paths=PackedStringArray("VersionLabel")]
+unique_name_in_owner = true
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 13
+modulate = Color(0.32, 0.32, 0.32, 1)

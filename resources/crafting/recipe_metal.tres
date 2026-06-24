@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CraftingRecipe" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/crafting/crafting_recipe.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"recipe_metal"
+display_name = "Металл (переплавка)"
+description = "Переплавляем материалы и камень в металл. Требует кузницу."
+input_resources = {"materials": 8, "stone": 3}
+output_resource = "metal"
+output_amount = 2
+requires_building = &"forge"

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="NPCData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/npc_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"farmer"
+display_name = "Фермер"
+description = "Снижает расход еды всей группы. Требует охраняемую грядку, беззащитен без неё."
+ability_id = &"farmer_food"
+ability_role = 1
+ability_description = "Уменьшает ежедневный расход еды группы на 30%. Требует наличие farm_plot в лагере."
+food_upkeep = 1
+requires_structure_id = &"farm_plot"
+max_health = 65
+attack_damage = 6
+attack_range = 32.0
+base_loyalty = 0.70
